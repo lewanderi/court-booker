@@ -41,7 +41,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 # Hall fields that are safe and useful to publish in data.json.
 PUBLIC_HALL_FIELDS = (
-    "id", "name", "area", "address", "lat", "lon", "phone", "photos", "info",
+    "id", "name", "area", "address", "lat", "lon", "phone", "photos", "description",
+    "opening_hours", "opening_exceptions", "amenities", "booking_rules",
     "system", "book_url", "benefits",
 )
 
@@ -311,6 +312,7 @@ def build(cfg, days_ahead=DAYS_AHEAD):
     return {
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "sports": sorted(cfg.get("sports", []), key=lambda s: s.get("order", 0)),
+        "systems": {k: {"name": v.get("name", k)} for k, v in cfg["systems"].items()},
         "halls": [public_hall(h, *status[h["id"]]) for h in cfg["halls"]],
         "days": out_days,
     }

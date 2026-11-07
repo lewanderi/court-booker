@@ -260,14 +260,22 @@
   /* ---------- hall page ---------- */
   .crumbs { padding-top: 24px; font-size: 13px; color: var(--muted); }
   .crumbs a { color: var(--muted); }
-  .hallhead { padding-top: 24px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px; }
-  .hallhead .l { display: flex; flex-direction: column; gap: 8px; }
+  .hallhead { padding-top: 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px; }
+  .hallhead .l { flex: 1 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
   .hallhead h1 { color: var(--ink); }
-  .hallhead p { margin: 0; font-size: 15px; color: var(--muted); }
-  .hallhead .r { display: flex; flex-wrap: wrap; gap: 10px; }
+  .hallhead .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .hallhead .desc { margin: 0; font-size: 16px; line-height: 1.55; color: #3E4757; max-width: 640px; }
+  .hallhead .r { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
   .hallhead .btn { min-height: 48px; padding: 0 22px; }
+  .hallhead .status { flex-basis: 100%; text-align: right; font-size: 13px; color: var(--green); min-height: 1em; }
+  .hallhead .badge { font-size: 12px; padding: 5px 10px; }
+  .chip { font-size: 13px; font-weight: 500; padding: 6px 12px; border-radius: 999px; background: #F1F3F6; }
+  .chip.benefit { background: #EEF0FA; color: #2F3A8C; }
+  .chip.line { background: transparent; border: 1px solid var(--line); font-weight: 400; }
+  .iconbtn { width: 48px; height: 48px; border-radius: 999px; border: 1px solid var(--line2); background: var(--white); display: flex; align-items: center; justify-content: center; }
+  .iconbtn:hover { border-color: var(--ink); }
   .gridwrap { overflow-x: auto; margin: 0 -6px; }
-  table.slots { border-collapse: separate; border-spacing: 6px; width: 100%; min-width: 720px; font-size: 14px; table-layout: fixed; }
+  table.slots { border-collapse: separate; border-spacing: 6px; width: 100%; min-width: 640px; font-size: 14px; table-layout: fixed; }
   table.slots th.first { width: 64px; }
   table.slots th.pc { width: 96px; }
   table.slots th.first, table.slots tbody th { position: sticky; left: 0; z-index: 1; background: var(--white); box-shadow: -6px 0 0 var(--white); }
@@ -285,33 +293,57 @@
   a.cell:hover { background: #CFEBDA; color: var(--green-ink); }
   span.cell { background: var(--surface2); color: var(--muted); }
   .weeknav { display: flex; flex-wrap: wrap; gap: 8px; }
-  .gallery { display: grid; grid-template-columns: 2fr 1fr; grid-auto-rows: 144px; gap: 12px; margin-top: 28px; }
-  .gallery img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 16px; background: var(--surface); }
-  .gallery img:first-child { grid-row: span 2; }
-  .gallery.n1 { grid-template-columns: 1fr; grid-auto-rows: 300px; }
-  .gallery.n2 { grid-auto-rows: 300px; }
-  .gallery.n1 img:first-child, .gallery.n2 img:first-child { grid-row: auto; }
+  .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-top: 28px; }
+  .gallery .ph { position: relative; height: 240px; border-radius: 16px; overflow: hidden; background: var(--surface); }
+  .gallery img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .allph { position: absolute; right: 12px; bottom: 12px; border: 0; border-radius: 999px; background: var(--white); padding: 8px 14px; font-size: 13px; font-weight: 600; }
+  .phdlg { border: 0; border-radius: 20px; padding: 20px; width: min(1000px, calc(100vw - 32px)); max-height: calc(100vh - 48px); }
+  .phdlg::backdrop { background: rgba(14, 23, 38, .7); }
+  .phdlg .head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .phgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+  .phgrid img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 12px; background: var(--surface); }
+  .hallcols { display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start; margin-top: 40px; }
+  .hallmain { flex: 999 1 600px; min-width: 0; display: flex; flex-direction: column; gap: 40px; }
+  .hallmain > section { display: flex; flex-direction: column; gap: 16px; }
+  .hallmain h2 { margin: 0; font-size: clamp(22px, 3vw, 26px); font-weight: 600; letter-spacing: -.01em; }
+  .hallmain h2.sm { font-size: 22px; }
+  .hallmain .note { margin: 0; font-size: 13px; color: var(--muted); }
+  .stabs { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 6px; }
+  .stab { flex: 0 0 auto; min-height: 56px; display: flex; align-items: center; gap: 10px; padding: 6px 16px 6px 8px; border-radius: 999px; border: 1px solid var(--line); background: var(--white); text-align: left; }
+  .stab .ic { width: 40px; height: 40px; border-radius: 999px; background: #F1F3F6; display: flex; align-items: center; justify-content: center; }
+  .stab .tx { display: flex; flex-direction: column; gap: 1px; }
+  .stab .n { font-size: 14px; font-weight: 600; }
+  .stab .f { font-size: 12px; font-weight: 500; color: var(--green); }
+  .stab.on { background: var(--ink); border: 2px solid var(--ink); color: var(--white); cursor: default; }
+  .stab.on .ic { background: #1F2B40; }
+  .stab.on .f { color: #9FE0BC; }
+  .ptable { border-collapse: collapse; width: 100%; min-width: 480px; font-size: 15px; }
+  .ptable th, .ptable td { padding: 14px 4px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+  .ptable thead th { padding: 10px 4px; font-size: 13px; font-weight: 500; color: var(--muted); border-bottom: 1px solid var(--ink); }
+  .ptable th:first-child { text-align: left; }
+  .ptable tbody th { font-weight: 600; }
+  .rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 32px; }
+  .rules > div { display: flex; flex-direction: column; gap: 12px; }
+  .rules h2 { font-size: 18px; }
+  .rules ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 15px; color: #3E4757; }
+  .rules .chips { display: flex; flex-wrap: wrap; gap: 8px; }
   @media (max-width: 640px) {
-    .gallery { grid-template-columns: 1fr 1fr; grid-auto-rows: 110px; }
-    .gallery img:first-child { grid-column: 1 / -1; grid-row: span 2; }
-    .gallery.n1 { grid-template-columns: 1fr; grid-auto-rows: 200px; }
-    .gallery.n1 img:first-child { grid-row: auto; }
-    .gallery.n2 { grid-auto-rows: 160px; }
-    .gallery.n2 img:first-child { grid-column: auto; grid-row: auto; }
+    .gallery { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 16px; margin-left: -16px; margin-right: -16px; padding: 0 16px; }
+    .gallery .ph { flex: 0 0 82%; height: 200px; scroll-snap-align: start; }
+    .ptable { min-width: 0; font-size: 14px; }
+    .ptable th, .ptable td { white-space: normal; }
   }
-  .infogrid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 32px;
-    margin-top: 56px; padding-top: 32px; border-top: 1px solid var(--line);
-  }
-  .infogrid section { display: flex; flex-direction: column; gap: 12px; }
-  .infogrid h2 { margin: 0; font-size: 17px; font-weight: 600; }
-  .prices { margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 10px 16px; font-size: 15px; }
-  .prices dt { color: var(--muted); }
-  .prices dd { margin: 0; font-weight: 600; text-align: right; white-space: nowrap; }
-  .infogrid ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 15px; color: var(--muted); }
-  .infogrid .note, .infogrid .loc { margin: 0; color: var(--muted); }
-  .infogrid .note { font-size: 13px; }
-  .infogrid .loc { font-size: 15px; }
+  .hallaside { flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 16px; padding: 20px; border-radius: 20px; border: 1px solid var(--line); }
+  .hallaside .blk { display: flex; flex-direction: column; gap: 8px; }
+  .hallaside .blk + .blk { padding-top: 16px; border-top: 1px solid var(--line); }
+  .hallaside strong { font-size: 15px; }
+  .hallaside a { font-size: 14px; }
+  .hallaside a.go { font-weight: 600; }
+  .hallaside dl { margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 6px 16px; font-size: 14px; }
+  .hallaside dt { color: var(--muted); }
+  .hallaside dd { margin: 0; font-weight: 600; }
+  .hallaside .small { font-size: 13px; color: var(--muted); }
+  .hallaside .txt { font-size: 14px; color: #3E4757; }
   .card.near .img { height: 150px; }
 
   /* ---------- footer ---------- */
@@ -399,10 +431,15 @@
       prevWeek: '‹ Edelliset 7 päivää', nextWeek: 'Seuraavat 7 päivää ›',
       noSlotsWeek: 'Ei vapaita vuoroja näinä päivinä.',
       cellFull: 'ei vapaita kenttiä',
-      others: 'Muut sulkapallohallit', nearby: 'Sulkapalloa lähellä',
-      pricesTitle: 'Hinnat · kenttä / tunti', wkdays: 'Ma–pe', wkend: 'La–su',
-      pricesNote: 'Vapaiden vuorojen hinnat seuraavalta 14 päivältä. Lopullisen hinnan näet varatessa.',
-      goodToKnow: 'Hyvä tietää', location: 'Sijainti', phone: 'puh.', openMap: 'Avaa kartalla ↗',
+      others: 'Muut sulkapallohallit', alsoNearby: 'Lähellä myös',
+      pricesTitle: 'Hinnat · kenttä / tunti', colSport: 'Laji', colDay: 'Arki päivä', colEve: 'Arki ilta', colWe: 'Viikonloppu',
+      pricesNote: 'Hinnat haetaan varausjärjestelmästä vuorokohtaisesti. Arki-ilta = ma–pe klo 16 alkaen.',
+      booking: 'Varaaminen', bookedIn: (sys) => `Varaus tehdään ${sys}-järjestelmässä`, amenities: 'Palvelut',
+      hallInfo: 'Hallin tiedot', directionsLink: 'Reittiohjeet ↗', openingHours: 'Aukioloajat', contact: 'Yhteystiedot',
+      wd: { mon: 'Ma', tue: 'Ti', wed: 'Ke', thu: 'To', fri: 'Pe', sat: 'La', sun: 'Su' }, closed: 'Suljettu',
+      openNow: (t) => `Auki nyt · sulkeutuu klo ${t}`, closedNow: (t) => t ? `Suljettu · aukeaa klo ${t}` : 'Suljettu nyt',
+      share: 'Jaa', linkCopied: 'Linkki kopioitu', freeN: (n) => n ? `${n} vapaana` : 'Ei vapaita', sportTabs: 'Laji',
+      allPhotos: (n) => `Kaikki kuvat (${n})`, close: 'Sulje',
       photoAlt: (name, i) => `${name}, kuva ${i}`,
       notFound: 'Hallia ei löytynyt', backToHalls: 'Takaisin halleihin',
       loading: 'Ladataan vuoroja…',
@@ -463,10 +500,15 @@
       prevWeek: '‹ Previous 7 days', nextWeek: 'Next 7 days ›',
       noSlotsWeek: 'No free slots on these days.',
       cellFull: 'no free courts',
-      others: 'Other badminton halls', nearby: 'Badminton nearby',
-      pricesTitle: 'Prices · court / hour', wkdays: 'Mon–Fri', wkend: 'Sat–Sun',
-      pricesNote: 'Prices of free slots over the next 14 days. You see the final price when you book.',
-      goodToKnow: 'Good to know', location: 'Location', phone: 'tel.', openMap: 'Open in maps ↗',
+      others: 'Other badminton halls', alsoNearby: 'Also nearby',
+      pricesTitle: 'Prices · court / hour', colSport: 'Sport', colDay: 'Weekday daytime', colEve: 'Weekday evening', colWe: 'Weekend',
+      pricesNote: 'Prices come from the booking system for each slot. Weekday evening = Mon–Fri from 16:00.',
+      booking: 'Booking', bookedIn: (sys) => `Booked in the ${sys} system`, amenities: 'Facilities',
+      hallInfo: 'Hall details', directionsLink: 'Directions ↗', openingHours: 'Opening hours', contact: 'Contact',
+      wd: { mon: 'Mon', tue: 'Tue', wed: 'Wed', thu: 'Thu', fri: 'Fri', sat: 'Sat', sun: 'Sun' }, closed: 'Closed',
+      openNow: (t) => `Open now · closes at ${t}`, closedNow: (t) => t ? `Closed · opens at ${t}` : 'Closed now',
+      share: 'Share', linkCopied: 'Link copied', freeN: (n) => n ? `${n} free` : 'None free', sportTabs: 'Sport',
+      allPhotos: (n) => `All photos (${n})`, close: 'Close',
       photoAlt: (name, i) => `${name}, photo ${i}`,
       notFound: 'Hall not found', backToHalls: 'Back to halls',
       loading: 'Loading court times…',
@@ -830,31 +872,47 @@
     </main>`;
   }
 
-  // Price bands from the slots in data.json: weekdays vs weekend, by start hour.
-  // Hours with the same price are merged ("Ma–pe 7–16"); hours with no free
-  // slot in the data are unknown, so they don't split a band.
-  function priceBands(h) {
-    const out = [];
-    [['wkdays', [1, 2, 3, 4, 5]], ['wkend', [6, 0]]].forEach(([label, wds]) => {
-      const byHour = {};
-      Object.keys(data.days).forEach((d) => {
-        if (!wds.includes(asDate(d).getDay())) return;
-        data.days[d].forEach((r) => {
-          if (r.h !== h || r.price == null) return;
-          const b = (byHour[r.hour] ||= { min: Infinity, max: -Infinity });
-          b.min = Math.min(b.min, r.price);
-          b.max = Math.max(b.max, r.price_max ?? r.price);
-        });
+  // ---- Hall page ----
+  const WD_KEYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];   // Date.getDay() order
+  const WEEK_ORDER = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+  const EVENING_FROM = 16;   // "arki ilta" = Mon–Fri slots starting 16:00 or later
+  // halls.json text fields may be plain text or {"fi": ..., "en": ...}
+  const loc = (v) => (v && typeof v === 'object' && !Array.isArray(v) ? (v[lang] ?? v.fi) : v);
+  const sportName = (id) => { const sp = (data.sports || []).find((x) => x.id === id); return sp ? loc(sp.name) : id; };
+  const SPORT_ICONS = { badminton: 'M10 6l6 14 6-14M10 6l4 14M22 6l-4 14M16 6v14M12.5 24a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0 -7 0' };
+  const sportIcon = (id, color) => `<svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="${color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${SPORT_ICONS[id] || 'M6 6h20v20H6z'}"/></svg>`;
+  const SHARE_ICON = `<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#0E1726" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7 8l5-5 5 5M5 13v7h14v-7"/></svg>`;
+
+  // Weekday daytime / weekday evening / weekend price range from the slots in data.json.
+  function priceCols(h) {
+    const cols = { day: [], eve: [], we: [] };
+    Object.keys(data.days).forEach((d) => {
+      const wd = asDate(d).getDay();
+      data.days[d].forEach((r) => {
+        if (r.h !== h || r.price == null) return;
+        const k = wd === 0 || wd === 6 ? 'we' : r.hour >= EVENING_FROM ? 'eve' : 'day';
+        cols[k].push(r.price, r.price_max ?? r.price);
       });
-      let run = null;
-      Object.keys(byHour).map(Number).sort((a, b) => a - b).forEach((hr) => {
-        const p = byHour[hr];
-        if (run && p.min === run.min && p.max === run.max) run.to = hr;
-        else { if (run) out.push(run); run = { label, from: hr, to: hr, min: p.min, max: p.max }; }
-      });
-      if (run) out.push(run);
     });
+    const out = {};
+    Object.keys(cols).forEach((k) => { out[k] = { min: minOf(cols[k]), max: maxOf(cols[k]) }; });
     return out;
+  }
+  // opening_hours: {"mon": ["06:00", "23:00"], ..., "sun": null}; null or missing = closed.
+  function hoursRows(oh) {
+    const t = T(), rows = [];
+    WEEK_ORDER.forEach((k) => {
+      const txt = oh[k] ? `${oh[k][0]}–${oh[k][1]}` : t.closed;
+      const last = rows[rows.length - 1];
+      if (last && last.txt === txt) last.to = k; else rows.push({ from: k, to: k, txt });
+    });
+    const end = (k) => (lang === 'fi' ? t.wd[k].toLowerCase() : t.wd[k]);   // "Ma–pe", "Mon–Fri"
+    return rows.map((r) => ({ label: r.from === r.to ? t.wd[r.from] : `${t.wd[r.from]}–${end(r.to)}`, txt: r.txt }));
+  }
+  function openBadge(oh) {
+    const t = T(), v = oh[WD_KEYS[asDate(today()).getDay()]], now = nowStr.slice(11, 16);
+    if (v && now >= v[0] && now < v[1]) return `<span class="badge">${esc(t.openNow(v[1]))}</span>`;
+    return `<span class="badge off">${esc(t.closedNow(v && now < v[0] ? v[0] : ''))}</span>`;
   }
   const hasPoint = (h) => typeof h.lat === 'number' && typeof h.lon === 'number';
   function distKm(a, b) {
@@ -883,7 +941,7 @@
     const w = p.get('w') === '1' && hasNext ? 1 : 0;
     const week = dates.slice(w * 7, w * 7 + 7);
 
-    // start time -> date -> {count, price, price_max, courts}
+    // start time -> date -> row with the most free courts
     const grid = {};
     week.forEach((date) => rowsFor(date).filter((r) => r.h === h).forEach((r) => {
       const row = (grid[r.start] ||= {});
@@ -891,31 +949,32 @@
       if (!c || r.count > c.count) row[date] = r;
     }));
     const starts = Object.keys(grid).sort();
-    const allMin = minOf(dates.flatMap((d) => rowsFor(d).filter((r) => r.h === h).map((r) => r.price)));
-    const weekPrices = new Set(starts.flatMap((s) => Object.values(grid[s]).map((r) => r.price)).filter((x) => x != null));
-    const deal = weekPrices.size > 1 ? Math.min(...weekPrices) : null;
+    const weekFree = starts.reduce((n, st) => n + Object.keys(grid[st]).length, 0);
 
     const table = starts.length ? `<div class="gridwrap"><table class="slots">
       <thead><tr><th scope="col" class="first">${t.timeCol}</th>
         ${week.map((d) => `<th scope="col"><span class="w">${esc(d === today() ? t.today : cap(weekdayShort(d)))}</span><span class="d">${esc(shortDate(d))}</span></th>`).join('')}
-        <th scope="col" class="pc">${t.priceCol}</th></tr></thead>
-      <tbody>${starts.map((s) => {
-        const cells = week.map((d) => grid[s][d]);
-        const pMin = minOf(cells.map((r) => r && r.price)), pMax = maxOf(cells.map((r) => r && r.price_max));
-        return `<tr><th scope="row">${esc(s)}</th>${cells.map((r, i) => {
-          const d = week[i];
-          if (!r) return `<td><span class="cell" aria-label="${esc(longDate(d) + ' ' + t.at(s) + ': ' + t.cellFull)}">–</span></td>`;
-          const courts = r.courts ? ' (' + r.courts.join(', ') + ')' : '';
-          return `<td><a class="cell" href="${esc(r.book_url || h.book_url)}" target="_blank" rel="noopener noreferrer" data-book
-            data-venue="${esc(h.system)}" data-hall="${esc(h.id)}" data-date="${d}" data-start="${esc(s)}"
-            title="${esc(t.freeCourts(r.count) + courts)}" aria-label="${esc(t.bookAria(h.name, longDate(d) + ' ' + t.at(s), r.count, eurRange(r.price, r.price_max)))}">${r.count}</a></td>`;
-        }).join('')}<td class="pc ${deal != null && pMin === deal && pMax === deal ? 'deal' : ''}">${esc(eurRange(pMin, pMax))}</td></tr>`;
-      }).join('')}</tbody></table></div>` : `<p class="muted">${ok ? t.noSlotsWeek : t.unavailable}</p>`;
+      </tr></thead>
+      <tbody>${starts.map((st) => `<tr><th scope="row">${esc(st)}</th>${week.map((d) => {
+        const r = grid[st][d];
+        if (!r) return `<td><span class="cell" aria-label="${esc(longDate(d) + ' ' + t.at(st) + ': ' + t.cellFull)}">–</span></td>`;
+        const courts = r.courts ? ' (' + r.courts.join(', ') + ')' : '';
+        return `<td><a class="cell" href="${esc(r.book_url || h.book_url)}" target="_blank" rel="noopener noreferrer" data-book
+          data-venue="${esc(h.system)}" data-hall="${esc(h.id)}" data-date="${d}" data-start="${esc(st)}"
+          title="${esc(t.freeCourts(r.count) + courts)}" aria-label="${esc(t.bookAria(h.name, longDate(d) + ' ' + t.at(st), r.count, eurRange(r.price, r.price_max)))}">${r.count}</a></td>`;
+      }).join('')}</tr>`).join('')}</tbody></table></div>` : `<p class="muted">${ok ? t.noSlotsWeek : t.unavailable}</p>`;
 
     const weekNav = hasNext ? `<div class="weeknav">
       <a class="btn ghost" href="#/halli/${h.id}" ${w === 0 ? 'aria-current="true" style="background:var(--ink);color:#fff"' : ''}>${esc(cap(shortDate(dates[0])))}–${esc(shortDate(dates[Math.min(6, dates.length - 1)]))}</a>
       <a class="btn ghost" href="#/halli/${h.id}?w=1" ${w === 1 ? 'aria-current="true" style="background:var(--ink);color:#fff"' : ''}>${esc(shortDate(dates[7]))}–${esc(shortDate(dates[dates.length - 1]))}</a>
     </div>` : '';
+
+    // Sport tabs: only sports the page can show today (one for now).
+    const tabs = Object.keys(h.sports || {}).filter((sp) => sp === SPORT).map((sp) => `
+      <button type="button" role="tab" aria-selected="true" class="stab on">
+        <span class="ic">${sportIcon(sp, '#FFFFFF')}</span>
+        <span class="tx"><span class="n">${esc(sportName(sp))}</span><span class="f">${esc(t.freeN(weekFree))}</span></span>
+      </button>`).join('');
 
     // Header button: the week of the next free slot if the hall has per-week links.
     const nextLinked = dates.flatMap((d) => rowsFor(d)).find((r) => r.h === h && r.book_url);
@@ -926,48 +985,84 @@
     const mapQuery = hasPoint(h) ? `${h.lat},${h.lon}` : (h.address || h.name + ', Helsinki');
     const maps = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(mapQuery);
 
-    // Optional details from halls.json; each section shows only when filled in.
-    const photos = (h.photos || []).map((ph) => (typeof ph === 'string' ? { src: ph } : ph)).filter((ph) => ph && ph.src).slice(0, 3);
-    const gallery = photos.length ? `<div class="gallery n${photos.length}">${photos.map((ph, i) =>
-      `<img src="${esc(ph.src)}" alt="${esc((ph.alt && (ph.alt[lang] || ph.alt.fi || ph.alt)) || t.photoAlt(h.name, i + 1))}" loading="lazy">`).join('')}</div>` : '';
-    const bands = priceBands(h);
-    const bandMin = bands.length > 1 ? Math.min(...bands.map((b) => b.min)) : null;
-    const info = (h.info && (h.info[lang] || h.info.fi)) || [];
-    const infoGrid = [
-      bands.length ? `<section aria-labelledby="price-h"><h2 id="price-h">${t.pricesTitle}</h2>
-        <dl class="prices">${bands.map((b) => `<dt>${t[b.label]} ${b.from}–${b.to + 1}</dt><dd class="${b.min === bandMin && b.max === bandMin ? 'deal' : ''}">${esc(eurRange(b.min, b.max))}</dd>`).join('')}</dl>
-        <p class="note">${t.pricesNote}</p></section>` : '',
-      info.length ? `<section aria-labelledby="info-h"><h2 id="info-h">${t.goodToKnow}</h2>
-        <ul>${info.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></section>` : '',
-      h.address || h.phone ? `<section aria-labelledby="loc-h"><h2 id="loc-h">${t.location}</h2>
-        <p class="loc">${[h.address ? esc(h.address) : '', h.phone ? `${t.phone} <a href="tel:${esc(String(h.phone).replace(/[^+\d]/g, ''))}">${esc(h.phone)}</a>` : ''].filter(Boolean).join(' · ')}</p>
-        <a class="more" href="${maps}" target="_blank" rel="noopener noreferrer" style="font-size:14px">${t.openMap}</a></section>` : '',
-    ].filter(Boolean).join('');
+    // Optional details from halls.json; each part shows only when filled in.
+    const desc = loc(h.description);
+    const photos = (h.photos || []).map((ph) => (typeof ph === 'string' ? { src: ph } : ph)).filter((ph) => ph && ph.src);
+    const img = (ph, i) => `<img src="${esc(ph.src)}" alt="${esc(loc(ph.alt) || t.photoAlt(h.name, i + 1))}" loading="lazy">`;
+    const gallery = photos.length ? `<div class="gallery">${photos.slice(0, 3).map((ph, i) => `<div class="ph">${img(ph, i)}${
+        i === Math.min(2, photos.length - 1) && photos.length > 3 ? `<button type="button" class="allph" data-photos>${esc(t.allPhotos(photos.length))}</button>` : ''}</div>`).join('')}</div>
+      ${photos.length > 3 ? `<dialog class="phdlg" id="phdlg" aria-label="${esc(h.name)}"><div class="head"><strong>${esc(h.name)}</strong>
+        <button type="button" class="toggle" data-close-photos>${t.close}</button></div><div class="phgrid">${photos.map(img).join('')}</div></dialog>` : ''}` : '';
+    const pc = priceCols(h);
+    const pVals = ['day', 'eve', 'we'].filter((k) => pc[k].min != null);
+    const pDeal = new Set(pVals.map((k) => pc[k].min)).size > 1 ? Math.min(...pVals.map((k) => pc[k].min)) : null;
+    const priceSection = pVals.length ? `<section aria-labelledby="price-h"><h2 id="price-h" class="sm">${t.pricesTitle}</h2>
+      <div class="gridwrap" style="margin:0"><table class="ptable"><thead><tr><th scope="col">${t.colSport}</th><th scope="col">${t.colDay}</th><th scope="col">${t.colEve}</th><th scope="col">${t.colWe}</th></tr></thead>
+      <tbody><tr><th scope="row">${esc(sportName(SPORT))}</th>${['day', 'eve', 'we'].map((k) =>
+        `<td class="${pDeal != null && pc[k].min === pDeal && pc[k].max === pDeal ? 'deal' : ''}">${pc[k].min != null ? esc(eurRange(pc[k].min, pc[k].max)) : '–'}</td>`).join('')}</tr></tbody></table></div>
+      <p class="note">${t.pricesNote}</p></section>` : '';
+    const sysName = (data.systems && data.systems[h.system] && data.systems[h.system].name) || h.system;
+    const rules = [...(loc(h.booking_rules) || []), t.bookedIn(sysName)];
+    const amenities = loc(h.amenities) || [];
+    const oh = h.opening_hours && typeof h.opening_hours === 'object' ? h.opening_hours : null;
+    let site = h.book_url;
+    try { site = new URL(h.book_url).host; } catch (e) {}
+    const tel = h.phone ? String(h.phone).replace(/[^+\d]/g, '') : '';
+    const sportChips = Object.entries(h.sports || {}).map(([sp, cfg]) => `<span class="chip">${esc(sportName(sp))} · ${esc(t.courtsN(cfg.courts))}</span>`).join('');
+    const benefitChips = (h.benefits || []).map((b) => `<span class="chip benefit">${esc(loc(b))}</span>`).join('');
 
     return `<div class="band">${topbar('halli')}</div>
     ${notices()}
     <main class="wrap">
-      <nav class="crumbs" aria-label="${t.crumbs}"><a href="#/hallit">${t.crumbHalls}</a> › <a href="#/hallit">${t.crumbSport}</a> › ${esc(h.name)}</nav>
+      <nav class="crumbs" aria-label="${t.crumbs}"><a href="#/hallit">${t.crumbHalls}</a> › <a href="#/haku?a=${h.id}&t=7-22">${esc(h.area)}</a> › ${esc(h.name)}</nav>
       <div class="hallhead">
         <div class="l">
-          ${ok ? `<span class="badge">● ${t.liveSlots}</span>` : `<span class="badge off">${t.noInfo}</span>`}
+          <div class="row">
+            ${ok ? `<span class="badge">● ${t.liveSlots} · ${esc(t.updated(updatedRel()))}</span>` : `<span class="badge off">${t.noInfo}</span>`}
+            ${oh ? openBadge(oh) : ''}
+          </div>
           <h1 class="display" tabindex="-1">${esc(h.name)}</h1>
-          <p>${esc(h.address || h.area)} · ${esc(t.bcourtsN(h.courts))}${allMin != null ? ` · ${t.fromPerH} <strong class="deal">${esc(eur(allMin))}${t.perH}</strong>` : ''}</p>
+          ${desc ? `<p class="desc">${esc(desc)}</p>` : ''}
+          <div class="row" style="margin-top:4px">${sportChips}${benefitChips}</div>
         </div>
         <div class="r">
-          <a class="btn ghost" href="${maps}" target="_blank" rel="noopener noreferrer">${t.directions}</a>
+          <button type="button" class="iconbtn" data-share aria-label="${t.share}" title="${t.share}">${SHARE_ICON}</button>
           <a class="btn" href="${esc(hallBook)}" target="_blank" rel="noopener noreferrer" data-book data-venue="${esc(h.system)}" data-hall="${esc(h.id)}">${t.bookOnVenue}</a>
+          <span class="status" role="status" id="share-status"></span>
         </div>
       </div>
       ${gallery}
-      <section class="section" aria-labelledby="slots-h" style="padding-top:40px">
-        <div class="section-head"><h2 id="slots-h">${t.freeSlots}</h2><span class="muted" style="font-size:13px">${t.gridNote} · ${esc(t.updated(updatedRel()))}</span></div>
-        ${weekNav}
-        ${table}
-      </section>
-      ${infoGrid ? `<div class="infogrid">${infoGrid}</div>` : ''}
+      <div class="hallcols">
+        <div class="hallmain">
+          <section aria-labelledby="slots-h">
+            <div class="section-head"><h2 id="slots-h">${t.freeSlots}</h2><span class="muted" style="font-size:13px">${t.gridNote}</span></div>
+            ${tabs ? `<div class="stabs" role="tablist" aria-label="${t.sportTabs}">${tabs}</div>` : ''}
+            ${weekNav}
+            ${table}
+          </section>
+          ${priceSection}
+          <section class="rules" aria-label="${t.booking}">
+            <div><h2>${t.booking}</h2><ul>${rules.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>
+            ${amenities.length ? `<div><h2>${t.amenities}</h2><div class="chips">${amenities.map((x) => `<span class="chip line">${esc(x)}</span>`).join('')}</div></div>` : ''}
+          </section>
+        </div>
+        <aside class="hallaside" aria-label="${t.hallInfo}">
+          <div class="blk">
+            <strong>${esc(h.address || h.area + ', Helsinki')}</strong>
+            <a class="go" href="${maps}" target="_blank" rel="noopener noreferrer">${t.directionsLink}</a>
+          </div>
+          ${oh ? `<div class="blk"><strong>${t.openingHours}</strong>
+            <dl>${hoursRows(oh).map((r) => `<dt>${esc(r.label)}</dt><dd>${esc(r.txt)}</dd>`).join('')}</dl>
+            ${loc(h.opening_exceptions) ? `<span class="small">${esc(loc(h.opening_exceptions))}</span>` : ''}</div>` : ''}
+          <div class="blk">
+            <strong>${t.contact}</strong>
+            <a href="${esc(h.book_url)}" target="_blank" rel="noopener noreferrer">${esc(site)} ↗</a>
+            ${tel ? `<a class="txt" href="tel:${esc(tel)}">${esc(h.phone)}</a>` : ''}
+          </div>
+        </aside>
+      </div>
       <section class="section">
-        <div class="section-head"><h2>${near ? t.nearby : t.others}</h2><a class="more" href="#/hallit">${t.allHalls}</a></div>
+        <div class="section-head"><h2>${near ? t.alsoNearby : t.others}</h2><a class="more" href="#/hallit">${t.allHalls}</a></div>
         <div class="grid-cards">${others.map((x) => nearCard(x)).join('')}</div>
       </section>
     </main>`;
@@ -1075,6 +1170,16 @@
       render(true);
       return;
     }
+    if (e.target.closest('[data-share]')) {
+      const url = location.href, title = document.title;
+      const done = () => { const st = document.getElementById('share-status'); if (st) { st.textContent = T().linkCopied; setTimeout(() => { st.textContent = ''; }, 2500); } };
+      if (navigator.share) navigator.share({ title, url }).catch(() => {});
+      else if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, () => {});
+      track('share', { hall: parseRoute().id });
+      return;
+    }
+    if (e.target.closest('[data-photos]')) { const d = document.getElementById('phdlg'); if (d && d.showModal) d.showModal(); return; }
+    if (e.target.closest('[data-close-photos]')) { const d = document.getElementById('phdlg'); if (d) d.close(); return; }
     const book = e.target.closest('[data-book]');
     if (book) track('book-click', { venue: book.dataset.venue, hall: book.dataset.hall, date: book.dataset.date || '', start: book.dataset.start || '' });
   });
