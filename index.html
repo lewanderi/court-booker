@@ -315,15 +315,9 @@
   }
   const track = (name, props) => { try { if (window.umami) window.umami.track(name, props); } catch (e) {} };
 
-  // ---- Halls we have live data for. Keyed by venue + hall from data.json. ----
-  const HALLS = [
-    { id: 'kallio', venue: 'urheiluhallit', hall: 'Kallio', name: 'Helsingin urheilutalo', area: 'Kallio', courts: 4 },
-    { id: 'meilahti', venue: 'meilahti', hall: 'Forza', name: 'Meilahden liikuntakeskus', area: 'Meilahti', courts: 10 },
-    { id: 'makelanrinne', venue: 'urheiluhallit', hall: 'Mäkelänrinne', name: 'Mäkelänrinteen uintikeskus', area: 'Mäkelänrinne', courts: 5 },
-    { id: 'pasila', venue: 'urheiluhallit', hall: 'Pasila', name: 'Pasilan urheiluhalli', area: 'Pasila', courts: 10 },
-  ];
-  const HALL_BY_KEY = {}, HALL_BY_ID = {};
-  HALLS.forEach((h) => { HALL_BY_KEY[h.venue + '|' + h.hall] = h; HALL_BY_ID[h.id] = h; });
+  // ---- Halls come from data.json (generated from halls.json by fetch_data.py). ----
+  const SPORT = 'badminton';     // the only sport the page shows for now
+  let HALLS = [], HALL_BY_ID = {};
 
   // Start-hour ranges (inclusive): a slot starting 22:00 counts as evening.
   const PRESETS = [['morning', 7, 11], ['day', 12, 16], ['evening', 17, 22], ['all', 7, 22]];
@@ -502,7 +496,7 @@
   function rowsFor(date) {
     return (data.days[date] || []).filter((r) => `${date} ${r.start}` >= nowStr);
   }
-  const venueOk = (h) => !!(data.venues[h.venue] && data.venues[h.venue].ok);
+  const venueOk = (h) => !!h.ok;
 
   // ---- Search state (lives in the URL hash) ----
   function readSel(p) {
@@ -573,20 +567,20 @@
   }
 
   function slotPill(r, date, showDay, dealPrice) {
-    const t = T(), h = r.h, v = data.venues[r.venue];
+    const t = T(), h = r.h;
     const priceTxt = eurRange(r.price, r.price_max);
     const when = `${longDate(date)} ${t.at(r.start)}`;
     const courts = r.courts ? ' (' + r.courts.join(', ') + ')' : '';
     const isDeal = dealPrice != null && r.price === dealPrice;
-    return `<a class="pill" href="${esc(v.book_url)}" target="_blank" rel="noopener noreferrer" data-book
-      data-venue="${esc(r.venue)}" data-hall="${esc(r.hall)}" data-date="${date}" data-start="${esc(r.start)}"
+    return `<a class="pill" href="${esc(h.book_url)}" target="_blank" rel="noopener noreferrer" data-book
+      data-venue="${esc(h.system)}" data-hall="${esc(h.id)}" data-date="${date}" data-start="${esc(r.start)}"
       title="${esc(t.freeCourts(r.count) + courts)}" aria-label="${esc(t.bookAria(h.name, when, r.count, priceTxt))}">
       ${showDay ? `<span class="wd">${esc(cap(weekdayShort(date)))}</span>` : ''}<span class="t">${esc(r.start)}</span>${priceTxt ? `<span class="p ${isDeal ? 'deal' : ''}">${esc(priceTxt)}</span>` : ''}</a>`;
   }
 
   function notices() {
     const t = T(), msgs = [];
-    Object.values(data.venues).forEach((v) => { if (!v.ok) msgs.push(t.venueDown(v.name)); });
+    HALLS.forEach((h) => { if (!h.ok) msgs.push(t.venueDown(h.name)); });
     const ageMin = (Date.now() - Date.parse(data.generated_at)) / 60000;
     if (ageMin > 60) msgs.push(t.stale(Math.round(ageMin / 60)));
     return `<div class="notices wrap" role="status">${msgs.map((m) => `<p class="notice">${esc(m)}</p>`).join('')}</div>`;
@@ -715,7 +709,7 @@
         <span class="thumb off" aria-hidden="true"></span>
         <div class="body">
           <div class="title"><span>${esc(h.name)}</span><span class="meta">${esc(h.area)} · ${esc(t.courtsN(h.courts))}</span></div>
-          <p>${t.unavailable} <a href="${esc(data.venues[h.venue].book_url)}" target="_blank" rel="noopener noreferrer">${t.seeVenue}</a></p>
+          <p>${t.unavailable} <a href="${esc(h.book_url)}" target="_blank" rel="noopener noreferrer">${t.seeVenue}</a></p>
         </div>
       </article>`).join('')}</div>` : '';
 
@@ -763,7 +757,7 @@
 
     const cards = items.map(({ h, rows, min, ok }) => {
       const open = expanded.has(h.id) && ok;
-      const book = data.venues[h.venue].book_url;
+      const book = h.book_url;
       return `<article class="hcard ${open ? 'open' : ''}">
         <div class="top-row">
           <a class="thumb" href="#/halli/${h.id}" tabindex="-1" aria-hidden="true">${ART}</a>
@@ -807,7 +801,7 @@
       return `<div class="band">${topbar('halli')}<div class="pagehead wrap"><h1 class="display" tabindex="-1">${t.notFound}</h1></div></div>
         <main class="wrap"><p style="padding-top:32px"><a class="btn" href="#/hallit">${t.backToHalls}</a></p></main>`;
     }
-    const v = data.venues[h.venue], ok = venueOk(h);
+    const ok = venueOk(h);
     const hasNext = dates.length > 7;
     const w = p.get('w') === '1' && hasNext ? 1 : 0;
     const week = dates.slice(w * 7, w * 7 + 7);
@@ -835,8 +829,8 @@
           const d = week[i];
           if (!r) return `<td><span class="cell" aria-label="${esc(longDate(d) + ' ' + t.at(s) + ': ' + t.cellFull)}">–</span></td>`;
           const courts = r.courts ? ' (' + r.courts.join(', ') + ')' : '';
-          return `<td><a class="cell" href="${esc(v.book_url)}" target="_blank" rel="noopener noreferrer" data-book
-            data-venue="${esc(r.venue)}" data-hall="${esc(r.hall)}" data-date="${d}" data-start="${esc(s)}"
+          return `<td><a class="cell" href="${esc(h.book_url)}" target="_blank" rel="noopener noreferrer" data-book
+            data-venue="${esc(h.system)}" data-hall="${esc(h.id)}" data-date="${d}" data-start="${esc(s)}"
             title="${esc(t.freeCourts(r.count) + courts)}" aria-label="${esc(t.bookAria(h.name, longDate(d) + ' ' + t.at(s), r.count, eurRange(r.price, r.price_max)))}">${r.count}</a></td>`;
         }).join('')}<td class="pc ${deal != null && pMin === deal && pMax === deal ? 'deal' : ''}">${esc(eurRange(pMin, pMax))}</td></tr>`;
       }).join('')}</tbody></table></div>` : `<p class="muted">${ok ? t.noSlotsWeek : t.unavailable}</p>`;
@@ -861,7 +855,7 @@
         </div>
         <div class="r">
           <a class="btn ghost" href="${maps}" target="_blank" rel="noopener noreferrer">${t.directions}</a>
-          <a class="btn" href="${esc(v.book_url)}" target="_blank" rel="noopener noreferrer" data-book data-venue="${esc(h.venue)}" data-hall="${esc(h.hall)}">${t.bookOnVenue}</a>
+          <a class="btn" href="${esc(h.book_url)}" target="_blank" rel="noopener noreferrer" data-book data-venue="${esc(h.system)}" data-hall="${esc(h.id)}">${t.bookOnVenue}</a>
         </div>
       </div>
       <section class="section" aria-labelledby="slots-h" style="padding-top:40px">
@@ -989,9 +983,15 @@
     .then((json) => {
       data = json;
       nowStr = helsinkiNow();
+      HALLS = (data.halls || [])
+        .filter((h) => h.sports && h.sports[SPORT])
+        .map((h) => Object.assign({}, h, { courts: h.sports[SPORT].courts }));
+      HALL_BY_ID = {};
+      HALLS.forEach((h) => { HALL_BY_ID[h.id] = h; });
       Object.keys(data.days).forEach((d) => {
         data.days[d] = data.days[d]
-          .map((r) => Object.assign({}, r, { h: HALL_BY_KEY[r.venue + '|' + r.hall], hour: parseInt(r.start.slice(0, 2), 10) }))
+          .filter((r) => (r.sport || SPORT) === SPORT)
+          .map((r) => Object.assign({}, r, { h: HALL_BY_ID[r.hall], hour: parseInt(r.start.slice(0, 2), 10) }))
           .filter((r) => r.h);
       });
       dates = Object.keys(data.days).filter((d) => d >= today()).sort();

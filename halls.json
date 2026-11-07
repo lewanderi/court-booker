@@ -1,0 +1,91 @@
+{
+  "sports": [
+    { "id": "badminton", "name": { "fi": "Sulkapallo", "en": "Badminton" }, "icon": "badminton", "order": 1 }
+  ],
+  "systems": {
+    "urheiluhallit": {
+      "name": "Urheiluhallit",
+      "services": { "badminton": 27 }
+    },
+    "cintoia": {
+      "name": "Cintoia",
+      "firestore_project": "falcon-328a1"
+    }
+  },
+  "halls": [
+    {
+      "id": "kallio",
+      "name": "Helsingin urheilutalo",
+      "area": "Kallio",
+      "address": null,
+      "lat": null,
+      "lon": null,
+      "system": "urheiluhallit",
+      "location_id": 1,
+      "book_url": "https://kauppa.urheiluhallit.fi/",
+      "benefits": [],
+      "sports": {
+        "badminton": { "courts": 4, "resource_ids": [79, 80, 81, 82] }
+      }
+    },
+    {
+      "id": "meilahti",
+      "name": "Meilahden liikuntakeskus",
+      "area": "Meilahti",
+      "address": null,
+      "lat": null,
+      "lon": null,
+      "system": "cintoia",
+      "freeindex": "meilahdenliikuntakeskus-bSZNqwvU",
+      "book_url": "https://meilahdenliikuntakeskus.cintoia.com/",
+      "benefits": [],
+      "sports": {
+        "badminton": {
+          "courts": 5,
+          "court_ids": {
+            "HznSAERtCT8tGijrzlRF": "K1",
+            "yWLsipR00zGfPInWCBbU": "K2",
+            "ohOwH1w4kllk7lbFUoBV": "K3",
+            "IcyqB5GHTA1tgp8vK0yj": "K4",
+            "VtDpAMJ2mz4CzPOcUQMc": "K5",
+            "GLcw22uVYjOY1dKIQquq": "K6",
+            "IymznG33tOpdxNcQCsKM": "K7",
+            "0bpxVzkSg03lTIsD1tJ0": "K8",
+            "RtUPYMJhxALg97hTVd4R": "K9",
+            "AJy3849ho87Gp9SsGg3L": "K10"
+          }
+        }
+      }
+    },
+    {
+      "id": "makelanrinne",
+      "name": "Mäkelänrinteen uintikeskus",
+      "area": "Mäkelänrinne",
+      "address": null,
+      "lat": null,
+      "lon": null,
+      "system": "urheiluhallit",
+      "location_id": 2,
+      "book_url": "https://kauppa.urheiluhallit.fi/",
+      "benefits": [],
+      "sports": {
+        "badminton": { "courts": 3, "resource_ids": [133, 134, 135, 136, 137] }
+      }
+    },
+    {
+      "id": "pasila",
+      "name": "Pasilan urheiluhalli",
+      "area": "Pasila",
+      "address": null,
+      "lat": null,
+      "lon": null,
+      "system": "urheiluhallit",
+      "location_id": 8,
+      "book_url": "https://kauppa.urheiluhallit.fi/",
+      "benefits": [],
+      "sports": {
+        "badminton": { "courts": 10, "resource_ids": [191, 192, 193, 194, 196, 197, 276, 277, 280, 281] }
+      }
+    }
+  ]
+}
