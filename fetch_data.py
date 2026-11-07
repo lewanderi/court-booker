@@ -40,7 +40,10 @@ PAUSE = 0.25  # seconds between requests, to stay gentle on the venues
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 # Hall fields that are safe and useful to publish in data.json.
-PUBLIC_HALL_FIELDS = ("id", "name", "area", "address", "lat", "lon", "system", "book_url", "benefits")
+PUBLIC_HALL_FIELDS = (
+    "id", "name", "area", "address", "lat", "lon", "phone", "photos", "info",
+    "system", "book_url", "benefits",
+)
 
 
 # ------------------------------------------------------------------ Urheiluhallit
@@ -51,12 +54,16 @@ UH_URL = (
 )
 
 
-def uh_parse(slots, day, res_to_hall, sport):
+def uh_parse(slots, day, res_to_hall, sport, links=None):
     """Urheiluhallit slot list -> rows for one day.
 
     Free courts = resource_ids - resource_ids_reserved
     (the built-in free / free_count fields are unreliable).
+    links: hall id -> booking link with a {monday} placeholder; their
+    calendar opens on a Monday, so each row links to the week of its day.
     """
+    links = links or {}
+    monday = (day - timedelta(days=day.weekday())).isoformat()
     rows = []
     for s in slots:
         start = datetime.strptime(s["time_start"], "%Y-%m-%d %H:%M:%S")
@@ -73,18 +80,19 @@ def uh_parse(slots, day, res_to_hall, sport):
         price = s.get("prices")
         price_eur = price / 100 if isinstance(price, (int, float)) else None
         for hall, ids in by_hall.items():
-            rows.append(
-                {
-                    "start": start.strftime("%H:%M"),
-                    "end": end.strftime("%H:%M"),
-                    "hall": hall,
-                    "sport": sport,
-                    "courts": None,  # only counts are known, not court names
-                    "count": len(ids),
-                    "price": price_eur,
-                    "price_max": price_eur,
-                }
-            )
+            row = {
+                "start": start.strftime("%H:%M"),
+                "end": end.strftime("%H:%M"),
+                "hall": hall,
+                "sport": sport,
+                "courts": None,  # only counts are known, not court names
+                "count": len(ids),
+                "price": price_eur,
+                "price_max": price_eur,
+            }
+            if hall in links:
+                row["book_url"] = links[hall].format(monday=monday)
+            rows.append(row)
     return rows
 
 
@@ -99,6 +107,11 @@ def fetch_urheiluhallit(halls, system, days):
             continue
         res_to_hall = {r: h["id"] for h in group for r in h["sports"][sport]["resource_ids"]}
         locations = sorted({h["location_id"] for h in group})
+        template = system.get("book_link")
+        links = {
+            h["id"]: template.replace("{service}", str(service)).replace("{location}", str(h["location_id"]))
+            for h in group
+        } if template else {}
         errors, ok_weeks = [], 0
         for monday in mondays:
             sunday = monday + timedelta(days=6)
@@ -117,7 +130,7 @@ def fetch_urheiluhallit(halls, system, days):
                 continue
             for d in days:
                 if monday <= d <= sunday:
-                    rows_by_day[d] += uh_parse(slots, d, res_to_hall, sport)
+                    rows_by_day[d] += uh_parse(slots, d, res_to_hall, sport, links)
             time.sleep(PAUSE)
         for h in group:
             status[h["id"]][0] = status[h["id"]][0] and ok_weeks > 0

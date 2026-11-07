@@ -1,16 +1,19 @@
 {
   "sports": [
-    { "id": "badminton", "name": { "fi": "Sulkapallo", "en": "Badminton" }, "icon": "badminton", "order": 1 }
+    {
+      "id": "badminton",
+      "name": {"fi": "Sulkapallo", "en": "Badminton"},
+      "icon": "badminton",
+      "order": 1
+    }
   ],
   "systems": {
     "urheiluhallit": {
       "name": "Urheiluhallit",
-      "services": { "badminton": 27 }
+      "services": {"badminton": 27},
+      "book_link": "https://kauppa.urheiluhallit.fi/webshop/reservations2/reservations/{service}/{location}/-/-/-/-/~date={monday}"
     },
-    "cintoia": {
-      "name": "Cintoia",
-      "firestore_project": "falcon-328a1"
-    }
+    "cintoia": {"name": "Cintoia", "firestore_project": "falcon-328a1"}
   },
   "halls": [
     {
@@ -20,13 +23,14 @@
       "address": null,
       "lat": null,
       "lon": null,
+      "phone": null,
+      "photos": [],
+      "info": {"fi": [], "en": []},
       "system": "urheiluhallit",
       "location_id": 1,
       "book_url": "https://kauppa.urheiluhallit.fi/",
       "benefits": [],
-      "sports": {
-        "badminton": { "courts": 4, "resource_ids": [79, 80, 81, 82] }
-      }
+      "sports": {"badminton": {"courts": 4, "resource_ids": [79, 80, 81, 82]}}
     },
     {
       "id": "meilahti",
@@ -35,6 +39,9 @@
       "address": null,
       "lat": null,
       "lon": null,
+      "phone": null,
+      "photos": [],
+      "info": {"fi": [], "en": []},
       "system": "cintoia",
       "freeindex": "meilahdenliikuntakeskus-bSZNqwvU",
       "book_url": "https://meilahdenliikuntakeskus.cintoia.com/",
@@ -64,13 +71,14 @@
       "address": null,
       "lat": null,
       "lon": null,
+      "phone": null,
+      "photos": [],
+      "info": {"fi": [], "en": []},
       "system": "urheiluhallit",
       "location_id": 2,
       "book_url": "https://kauppa.urheiluhallit.fi/",
       "benefits": [],
-      "sports": {
-        "badminton": { "courts": 3, "resource_ids": [133, 134, 135, 136, 137] }
-      }
+      "sports": {"badminton": {"courts": 3, "resource_ids": [133, 134, 135, 136, 137]}}
     },
     {
       "id": "pasila",
@@ -79,12 +87,15 @@
       "address": null,
       "lat": null,
       "lon": null,
+      "phone": null,
+      "photos": [],
+      "info": {"fi": [], "en": []},
       "system": "urheiluhallit",
       "location_id": 8,
       "book_url": "https://kauppa.urheiluhallit.fi/",
       "benefits": [],
       "sports": {
-        "badminton": { "courts": 10, "resource_ids": [191, 192, 193, 194, 196, 197, 276, 277, 280, 281] }
+        "badminton": {"courts": 10, "resource_ids": [191, 192, 193, 194, 196, 197, 276, 277, 280, 281]}
       }
     }
   ]

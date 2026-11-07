@@ -285,6 +285,34 @@
   a.cell:hover { background: #CFEBDA; color: var(--green-ink); }
   span.cell { background: var(--surface2); color: var(--muted); }
   .weeknav { display: flex; flex-wrap: wrap; gap: 8px; }
+  .gallery { display: grid; grid-template-columns: 2fr 1fr; grid-auto-rows: 144px; gap: 12px; margin-top: 28px; }
+  .gallery img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 16px; background: var(--surface); }
+  .gallery img:first-child { grid-row: span 2; }
+  .gallery.n1 { grid-template-columns: 1fr; grid-auto-rows: 300px; }
+  .gallery.n2 { grid-auto-rows: 300px; }
+  .gallery.n1 img:first-child, .gallery.n2 img:first-child { grid-row: auto; }
+  @media (max-width: 640px) {
+    .gallery { grid-template-columns: 1fr 1fr; grid-auto-rows: 110px; }
+    .gallery img:first-child { grid-column: 1 / -1; grid-row: span 2; }
+    .gallery.n1 { grid-template-columns: 1fr; grid-auto-rows: 200px; }
+    .gallery.n1 img:first-child { grid-row: auto; }
+    .gallery.n2 { grid-auto-rows: 160px; }
+    .gallery.n2 img:first-child { grid-column: auto; grid-row: auto; }
+  }
+  .infogrid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 32px;
+    margin-top: 56px; padding-top: 32px; border-top: 1px solid var(--line);
+  }
+  .infogrid section { display: flex; flex-direction: column; gap: 12px; }
+  .infogrid h2 { margin: 0; font-size: 17px; font-weight: 600; }
+  .prices { margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 10px 16px; font-size: 15px; }
+  .prices dt { color: var(--muted); }
+  .prices dd { margin: 0; font-weight: 600; text-align: right; white-space: nowrap; }
+  .infogrid ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 15px; color: var(--muted); }
+  .infogrid .note, .infogrid .loc { margin: 0; color: var(--muted); }
+  .infogrid .note { font-size: 13px; }
+  .infogrid .loc { font-size: 15px; }
+  .card.near .img { height: 150px; }
 
   /* ---------- footer ---------- */
   footer { margin-top: 80px; background: var(--ink); color: var(--soft); font-size: 14px; }
@@ -371,7 +399,11 @@
       prevWeek: '‹ Edelliset 7 päivää', nextWeek: 'Seuraavat 7 päivää ›',
       noSlotsWeek: 'Ei vapaita vuoroja näinä päivinä.',
       cellFull: 'ei vapaita kenttiä',
-      others: 'Muut sulkapallohallit',
+      others: 'Muut sulkapallohallit', nearby: 'Sulkapalloa lähellä',
+      pricesTitle: 'Hinnat · kenttä / tunti', wkdays: 'Ma–pe', wkend: 'La–su',
+      pricesNote: 'Vapaiden vuorojen hinnat seuraavalta 14 päivältä. Lopullisen hinnan näet varatessa.',
+      goodToKnow: 'Hyvä tietää', location: 'Sijainti', phone: 'puh.', openMap: 'Avaa kartalla ↗',
+      photoAlt: (name, i) => `${name}, kuva ${i}`,
       notFound: 'Hallia ei löytynyt', backToHalls: 'Takaisin halleihin',
       loading: 'Ladataan vuoroja…',
       loadFail: 'Vuoroja ei saatu ladattua',
@@ -431,7 +463,11 @@
       prevWeek: '‹ Previous 7 days', nextWeek: 'Next 7 days ›',
       noSlotsWeek: 'No free slots on these days.',
       cellFull: 'no free courts',
-      others: 'Other badminton halls',
+      others: 'Other badminton halls', nearby: 'Badminton nearby',
+      pricesTitle: 'Prices · court / hour', wkdays: 'Mon–Fri', wkend: 'Sat–Sun',
+      pricesNote: 'Prices of free slots over the next 14 days. You see the final price when you book.',
+      goodToKnow: 'Good to know', location: 'Location', phone: 'tel.', openMap: 'Open in maps ↗',
+      photoAlt: (name, i) => `${name}, photo ${i}`,
       notFound: 'Hall not found', backToHalls: 'Back to halls',
       loading: 'Loading court times…',
       loadFail: 'Court times could not be loaded',
@@ -572,7 +608,7 @@
     const when = `${longDate(date)} ${t.at(r.start)}`;
     const courts = r.courts ? ' (' + r.courts.join(', ') + ')' : '';
     const isDeal = dealPrice != null && r.price === dealPrice;
-    return `<a class="pill" href="${esc(h.book_url)}" target="_blank" rel="noopener noreferrer" data-book
+    return `<a class="pill" href="${esc(r.book_url || h.book_url)}" target="_blank" rel="noopener noreferrer" data-book
       data-venue="${esc(h.system)}" data-hall="${esc(h.id)}" data-date="${date}" data-start="${esc(r.start)}"
       title="${esc(t.freeCourts(r.count) + courts)}" aria-label="${esc(t.bookAria(h.name, when, r.count, priceTxt))}">
       ${showDay ? `<span class="wd">${esc(cap(weekdayShort(date)))}</span>` : ''}<span class="t">${esc(r.start)}</span>${priceTxt ? `<span class="p ${isDeal ? 'deal' : ''}">${esc(priceTxt)}</span>` : ''}</a>`;
@@ -794,6 +830,47 @@
     </main>`;
   }
 
+  // Price bands from the slots in data.json: weekdays vs weekend, by start hour.
+  // Hours with the same price are merged ("Ma–pe 7–16"); hours with no free
+  // slot in the data are unknown, so they don't split a band.
+  function priceBands(h) {
+    const out = [];
+    [['wkdays', [1, 2, 3, 4, 5]], ['wkend', [6, 0]]].forEach(([label, wds]) => {
+      const byHour = {};
+      Object.keys(data.days).forEach((d) => {
+        if (!wds.includes(asDate(d).getDay())) return;
+        data.days[d].forEach((r) => {
+          if (r.h !== h || r.price == null) return;
+          const b = (byHour[r.hour] ||= { min: Infinity, max: -Infinity });
+          b.min = Math.min(b.min, r.price);
+          b.max = Math.max(b.max, r.price_max ?? r.price);
+        });
+      });
+      let run = null;
+      Object.keys(byHour).map(Number).sort((a, b) => a - b).forEach((hr) => {
+        const p = byHour[hr];
+        if (run && p.min === run.min && p.max === run.max) run.to = hr;
+        else { if (run) out.push(run); run = { label, from: hr, to: hr, min: p.min, max: p.max }; }
+      });
+      if (run) out.push(run);
+    });
+    return out;
+  }
+  const hasPoint = (h) => typeof h.lat === 'number' && typeof h.lon === 'number';
+  function distKm(a, b) {
+    const R = 6371, rad = (x) => x * Math.PI / 180;
+    const dLat = rad(b.lat - a.lat), dLon = rad(b.lon - a.lon);
+    const s = Math.sin(dLat / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLon / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(s));
+  }
+  function nearCard(x) {
+    const t = T();
+    const m = minOf(dates.flatMap((d) => rowsFor(d)).filter((r) => r.h === x).map((r) => r.price));
+    const sub = m != null ? `${t.fromPerH} ${eur(m)}${t.perH}` : t.courtsN(x.courts);
+    return `<a class="card near" href="#/halli/${x.id}"><div class="img">${ART}</div>
+      <div class="stack"><div class="name">${esc(x.name)}</div><div class="sub">${esc(x.area)} · ${esc(sub)}</div></div></a>`;
+  }
+
   function viewHall(id, p) {
     const t = T();
     const h = HALL_BY_ID[id];
@@ -829,7 +906,7 @@
           const d = week[i];
           if (!r) return `<td><span class="cell" aria-label="${esc(longDate(d) + ' ' + t.at(s) + ': ' + t.cellFull)}">–</span></td>`;
           const courts = r.courts ? ' (' + r.courts.join(', ') + ')' : '';
-          return `<td><a class="cell" href="${esc(h.book_url)}" target="_blank" rel="noopener noreferrer" data-book
+          return `<td><a class="cell" href="${esc(r.book_url || h.book_url)}" target="_blank" rel="noopener noreferrer" data-book
             data-venue="${esc(h.system)}" data-hall="${esc(h.id)}" data-date="${d}" data-start="${esc(s)}"
             title="${esc(t.freeCourts(r.count) + courts)}" aria-label="${esc(t.bookAria(h.name, longDate(d) + ' ' + t.at(s), r.count, eurRange(r.price, r.price_max)))}">${r.count}</a></td>`;
         }).join('')}<td class="pc ${deal != null && pMin === deal && pMax === deal ? 'deal' : ''}">${esc(eurRange(pMin, pMax))}</td></tr>`;
@@ -840,32 +917,58 @@
       <a class="btn ghost" href="#/halli/${h.id}?w=1" ${w === 1 ? 'aria-current="true" style="background:var(--ink);color:#fff"' : ''}>${esc(shortDate(dates[7]))}–${esc(shortDate(dates[dates.length - 1]))}</a>
     </div>` : '';
 
+    // Header button: the week of the next free slot if the hall has per-week links.
+    const nextLinked = dates.flatMap((d) => rowsFor(d)).find((r) => r.h === h && r.book_url);
+    const hallBook = (nextLinked && nextLinked.book_url) || h.book_url;
+    const near = hasPoint(h) && HALLS.every((x) => x === h || hasPoint(x));
     const others = HALLS.filter((x) => x !== h);
-    const maps = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(h.name + ', Helsinki');
+    if (near) others.sort((a, b) => distKm(h, a) - distKm(h, b));
+    const mapQuery = hasPoint(h) ? `${h.lat},${h.lon}` : (h.address || h.name + ', Helsinki');
+    const maps = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(mapQuery);
+
+    // Optional details from halls.json; each section shows only when filled in.
+    const photos = (h.photos || []).map((ph) => (typeof ph === 'string' ? { src: ph } : ph)).filter((ph) => ph && ph.src).slice(0, 3);
+    const gallery = photos.length ? `<div class="gallery n${photos.length}">${photos.map((ph, i) =>
+      `<img src="${esc(ph.src)}" alt="${esc((ph.alt && (ph.alt[lang] || ph.alt.fi || ph.alt)) || t.photoAlt(h.name, i + 1))}" loading="lazy">`).join('')}</div>` : '';
+    const bands = priceBands(h);
+    const bandMin = bands.length > 1 ? Math.min(...bands.map((b) => b.min)) : null;
+    const info = (h.info && (h.info[lang] || h.info.fi)) || [];
+    const infoGrid = [
+      bands.length ? `<section aria-labelledby="price-h"><h2 id="price-h">${t.pricesTitle}</h2>
+        <dl class="prices">${bands.map((b) => `<dt>${t[b.label]} ${b.from}–${b.to + 1}</dt><dd class="${b.min === bandMin && b.max === bandMin ? 'deal' : ''}">${esc(eurRange(b.min, b.max))}</dd>`).join('')}</dl>
+        <p class="note">${t.pricesNote}</p></section>` : '',
+      info.length ? `<section aria-labelledby="info-h"><h2 id="info-h">${t.goodToKnow}</h2>
+        <ul>${info.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></section>` : '',
+      h.address || h.phone ? `<section aria-labelledby="loc-h"><h2 id="loc-h">${t.location}</h2>
+        <p class="loc">${[h.address ? esc(h.address) : '', h.phone ? `${t.phone} <a href="tel:${esc(String(h.phone).replace(/[^+\d]/g, ''))}">${esc(h.phone)}</a>` : ''].filter(Boolean).join(' · ')}</p>
+        <a class="more" href="${maps}" target="_blank" rel="noopener noreferrer" style="font-size:14px">${t.openMap}</a></section>` : '',
+    ].filter(Boolean).join('');
 
     return `<div class="band">${topbar('halli')}</div>
     ${notices()}
     <main class="wrap">
-      <nav class="crumbs" aria-label="${t.crumbs}"><a href="#/hallit">${t.crumbHalls}</a> › ${t.crumbSport} › ${esc(h.name)}</nav>
+      <nav class="crumbs" aria-label="${t.crumbs}"><a href="#/hallit">${t.crumbHalls}</a> › <a href="#/hallit">${t.crumbSport}</a> › ${esc(h.name)}</nav>
       <div class="hallhead">
         <div class="l">
           ${ok ? `<span class="badge">● ${t.liveSlots}</span>` : `<span class="badge off">${t.noInfo}</span>`}
           <h1 class="display" tabindex="-1">${esc(h.name)}</h1>
-          <p>${esc(h.area)} · ${esc(t.bcourtsN(h.courts))}${allMin != null ? ` · ${t.fromPerH} <strong class="deal">${esc(eur(allMin))}${t.perH}</strong>` : ''}</p>
+          <p>${esc(h.address || h.area)} · ${esc(t.bcourtsN(h.courts))}${allMin != null ? ` · ${t.fromPerH} <strong class="deal">${esc(eur(allMin))}${t.perH}</strong>` : ''}</p>
         </div>
         <div class="r">
           <a class="btn ghost" href="${maps}" target="_blank" rel="noopener noreferrer">${t.directions}</a>
-          <a class="btn" href="${esc(h.book_url)}" target="_blank" rel="noopener noreferrer" data-book data-venue="${esc(h.system)}" data-hall="${esc(h.id)}">${t.bookOnVenue}</a>
+          <a class="btn" href="${esc(hallBook)}" target="_blank" rel="noopener noreferrer" data-book data-venue="${esc(h.system)}" data-hall="${esc(h.id)}">${t.bookOnVenue}</a>
         </div>
       </div>
+      ${gallery}
       <section class="section" aria-labelledby="slots-h" style="padding-top:40px">
         <div class="section-head"><h2 id="slots-h">${t.freeSlots}</h2><span class="muted" style="font-size:13px">${t.gridNote} · ${esc(t.updated(updatedRel()))}</span></div>
         ${weekNav}
         ${table}
       </section>
+      ${infoGrid ? `<div class="infogrid">${infoGrid}</div>` : ''}
       <section class="section">
-        <div class="section-head"><h2>${t.others}</h2><a class="more" href="#/hallit">${t.allHalls}</a></div>
-        <div class="grid-cards">${others.map((x) => hallCard(x)).join('')}</div>
+        <div class="section-head"><h2>${near ? t.nearby : t.others}</h2><a class="more" href="#/hallit">${t.allHalls}</a></div>
+        <div class="grid-cards">${others.map((x) => nearCard(x)).join('')}</div>
       </section>
     </main>`;
   }
