@@ -1,171 +1,305 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Free badminton courts in Helsinki</title>
-<meta name="description" content="See free badminton courts at Meilahti, Kallio, Pasila and Mäkelänrinne in one place, then book on the venue's own site.">
-<meta name="theme-color" content="#1E5A8C">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231E5A8C'/%3E%3Cpath d='M6 8h20v16H6zM16 8v16M6 16h20' fill='none' stroke='white' stroke-width='2'/%3E%3C/svg%3E">
+<title>Court Finder – vapaat sulkapallokentät Helsingissä</title>
+<meta name="description" content="Helsingin sulkapallohallien vapaat vuorot yhdellä haulla: Meilahti, Kallio, Pasila ja Mäkelänrinne. Free badminton courts in Helsinki in one place.">
+<meta name="theme-color" content="#0E1726">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230E1726'/%3E%3Cpath d='M6 8h20v16H6zM16 8v16M6 16h20' fill='none' stroke='white' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ink: #13232F;
-    --paper: #EDF2F5;
+    --ink: #0E1726;
+    --muted: #5A6474;
+    --soft: #C8CFDA;       /* muted text on navy */
+    --edge: #3A4659;       /* borders on navy */
+    --line: #E6E8EC;
+    --line2: #D3D8E0;
+    --surface: #EEF0F3;
+    --surface2: #F6F7F9;
+    --green: #16794A;
+    --green-bg: #E7F4EC;
+    --green-ink: #0F5A36;
+    --deal: #C2410C;       /* cheapest price */
     --white: #FFFFFF;
-    --floor: #1E5A8C;      /* sports-hall floor blue */
-    --floor-deep: #143F63;
-    --line: #C3D1DB;
-    --muted: #526775;
-    --t1: #DCE8F1;         /* free-court tints, light to dark */
-    --t2: #B7D0E4;
-    --t3: #8DB6D5;
     --warn-bg: #FFF1C9;
     --warn-ink: #5A4300;
+    --display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+    --sans: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
   }
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
   body {
-    margin: 0;
-    background: var(--paper);
-    color: var(--ink);
-    font-family: ui-sans-serif, "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
-    font-size: 1rem;
-    line-height: 1.45;
+    margin: 0; background: var(--white); color: var(--ink);
+    font-family: var(--sans); font-size: 16px; line-height: 1.45;
     font-variant-numeric: tabular-nums;
   }
-  .wrap { max-width: 760px; margin: 0 auto; padding: 28px 18px 48px; }
-  h1 {
-    margin: 0 0 8px;
-    font-size: clamp(1.9rem, 6.5vw, 2.9rem);
-    line-height: 1.05;
-    letter-spacing: -0.025em;
-    font-weight: 800;
-    max-width: 14em;
-  }
-  .lede { margin: 0 0 24px; color: var(--muted); max-width: 34em; }
+  a { color: var(--ink); }
+  a:hover { color: var(--green); }
+  button, select, input { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  :focus-visible { outline: 3px solid #4C8DFF; outline-offset: 2px; }
+  h1:focus { outline: none; }
   .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding-left: 24px; padding-right: 24px; }
+  @media (max-width: 640px) { .wrap { padding-left: 16px; padding-right: 16px; } }
 
-  button, a.book { font: inherit; cursor: pointer; }
-  button:focus-visible, a:focus-visible { outline: 3px solid var(--floor-deep); outline-offset: 2px; }
+  /* ---------- navy band + header ---------- */
+  .band { position: relative; background: var(--ink); color: var(--white); overflow: hidden; }
+  .band .lines { position: absolute; inset: 0; opacity: .09; pointer-events: none; }
+  .top {
+    position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 24px;
+    padding-top: 18px; padding-bottom: 18px;
+  }
+  .logo {
+    flex: 1 1 140px; color: var(--white); text-decoration: none;
+    font-family: var(--display); font-weight: 700; font-size: 28px; letter-spacing: .01em; line-height: 1;
+  }
+  .logo:hover { color: var(--white); }
+  .nav { display: flex; gap: 4px 28px; justify-content: center; flex: 1 1 auto; }
+  .nav a { color: var(--soft); text-decoration: none; font-weight: 500; font-size: 14px; padding: 10px 0; border-bottom: 2px solid transparent; }
+  .nav a:hover { color: var(--white); }
+  .nav a[aria-current="page"] { color: var(--white); font-weight: 600; border-bottom-color: var(--white); }
+  .tools { flex: 1 1 140px; display: flex; justify-content: flex-end; }
+  .lang {
+    min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--edge);
+    background: transparent; color: var(--white); font-weight: 600; font-size: 14px;
+  }
+  .lang:hover { border-color: var(--soft); }
+  @media (max-width: 560px) {
+    .nav { order: 3; flex-basis: 100%; justify-content: flex-start; gap: 24px; }
+  }
 
-  /* day chips */
-  .days {
-    display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 10px;
-    margin: 0 -2px 14px; scroll-snap-type: x proximity;
+  /* ---------- hero (home) ---------- */
+  .hero {
+    position: relative; max-width: 1000px; margin: 0 auto; text-align: center;
+    padding: 80px 24px 96px; display: flex; flex-direction: column; align-items: center; gap: 20px;
   }
-  .day {
-    flex: 0 0 auto; min-width: 62px; padding: 8px 10px; text-align: center;
-    background: var(--white); color: var(--ink);
-    border: 1.5px solid var(--line); border-radius: 10px; scroll-snap-align: start;
+  .hero h1 {
+    margin: 0; font-family: var(--display); font-weight: 700; text-transform: uppercase;
+    font-size: clamp(46px, 9vw, 76px); line-height: .95; letter-spacing: .01em;
   }
-  .day .w { display: block; font-size: .8rem; color: var(--muted); }
-  .day .d { display: block; font-size: 1.05rem; font-weight: 700; }
-  .day[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--white); }
-  .day[aria-pressed="true"] .w { color: #C9D6DF; }
+  .hero p { margin: 0; font-size: 18px; color: var(--soft); max-width: 560px; }
+  .quick { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .quick a {
+    font-size: 14px; color: var(--white); text-decoration: none; padding: 8px 16px;
+    border-radius: 999px; border: 1px solid var(--edge);
+  }
+  .quick a:hover { border-color: var(--soft); color: var(--white); }
+  @media (max-width: 640px) { .hero { padding: 48px 16px 56px; } .hero p { font-size: 16px; } }
 
-  /* presets */
-  .presets { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
-  .preset {
-    padding: 6px 14px; border-radius: 999px; background: transparent; color: var(--ink);
-    border: 1.5px solid var(--line); font-weight: 600; font-size: .92rem;
+  /* ---------- search form ---------- */
+  .search {
+    width: 100%; max-width: 860px; margin-top: 12px; background: var(--white); color: var(--ink);
+    border-radius: 999px; padding: 8px; display: flex; align-items: center; gap: 4px; text-align: left;
   }
-  .preset[aria-pressed="true"] { border-color: var(--floor); color: var(--floor-deep); background: var(--white); }
+  .search .field {
+    flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; padding: 6px 20px;
+    border-right: 1px solid var(--line);
+  }
+  .search .field:nth-last-child(2) { border-right: 0; }
+  .search .lbl { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+  .search .val, .search select {
+    font-weight: 600; font-size: 15px; color: var(--ink); padding: 2px 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .search select { border: 0; background: transparent; width: 100%; cursor: pointer; margin-left: -3px; }
+  .search .go {
+    flex: 0 0 auto; min-height: 52px; display: flex; align-items: center; gap: 8px; padding: 0 26px;
+    border: 0; border-radius: 999px; background: var(--ink); color: var(--white); font-weight: 600; font-size: 15px;
+  }
+  .search .go:hover { background: #24324A; }
+  .search.compact { max-width: none; margin-top: 0; padding: 6px; }
+  .search.compact .field { padding: 4px 18px; }
+  .search.compact .go { min-height: 48px; padding: 0 24px; }
+  .searchbar { position: relative; padding-top: 8px; padding-bottom: 28px; }
+  @media (max-width: 760px) {
+    .search, .search.compact { flex-wrap: wrap; border-radius: 20px; padding: 8px; }
+    .search .field, .search.compact .field { flex: 1 1 45%; border-right: 0; border-bottom: 1px solid var(--line); padding: 8px 12px; }
+    .search .field:nth-last-child(2) { border-bottom: 1px solid var(--line); }
+    .search .go, .search.compact .go { flex: 1 1 100%; justify-content: center; margin-top: 6px; }
+  }
 
-  /* the hour strip */
-  .hours { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; }
-  @media (min-width: 640px) { .hours { grid-template-columns: repeat(16, 1fr); gap: 4px; } }
-  .hour {
-    display: flex; flex-direction: column; align-items: center; gap: 1px;
-    padding: 9px 0 8px; border-radius: 8px; border: 1.5px solid transparent; color: var(--ink);
-    background: var(--t1);
+  /* ---------- page titles in band ---------- */
+  .pagehead { position: relative; padding-top: 28px; padding-bottom: 40px; display: flex; flex-direction: column; gap: 10px; }
+  .display {
+    margin: 0; font-family: var(--display); font-weight: 700; text-transform: uppercase;
+    font-size: clamp(40px, 7vw, 56px); line-height: 1; letter-spacing: .01em;
   }
-  .hour .h { font-weight: 800; font-size: 1rem; line-height: 1.1; }
-  .hour .c { font-size: .8rem; line-height: 1.1; }
-  .hour.l2 { background: var(--t2); }
-  .hour.l3 { background: var(--t3); }
-  .hour.l0 { background: transparent; border: 1.5px dashed var(--line); color: var(--muted); }
-  .hour[aria-pressed="true"] { background: var(--floor); border-color: var(--floor-deep); color: var(--white); }
-  .hint { margin: 10px 0 0; font-size: .86rem; color: var(--muted); max-width: 40em; }
+  .pagehead p { margin: 0; color: var(--soft); }
 
-  /* notices */
-  .notice {
-    margin: 18px 0 0; padding: 10px 12px; border-radius: 8px;
-    background: var(--warn-bg); color: var(--warn-ink); font-size: .92rem;
-  }
-  .updated { margin: 22px 0 0; font-size: .85rem; color: var(--muted); }
+  /* ---------- notices ---------- */
+  .notices:empty { display: none; }
+  .notices { padding-top: 20px; }
+  .notice { margin: 0 0 8px; padding: 10px 14px; border-radius: 10px; background: var(--warn-bg); color: var(--warn-ink); font-size: 14px; }
 
-  /* results */
-  .results { margin-top: 10px; }
-  .results h2 { margin: 18px 0 2px; font-size: 1.05rem; font-weight: 700; color: var(--muted); }
-  .slot { margin-top: 22px; }
-  .slot-head {
-    display: flex; justify-content: space-between; align-items: baseline;
-    border-bottom: 2px solid var(--ink); padding-bottom: 4px;
+  /* ---------- shared bits ---------- */
+  main { display: block; }
+  .section { padding-top: 64px; display: flex; flex-direction: column; gap: 24px; }
+  .section-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .section-head h2 { margin: 0; font-size: clamp(22px, 3vw, 28px); font-weight: 600; letter-spacing: -.01em; }
+  .more { font-size: 15px; font-weight: 600; }
+  .muted { color: var(--muted); }
+  .art { display: block; width: 100%; height: 100%; }
+  .badge {
+    display: inline-block; font-size: 13px; font-weight: 600; color: var(--green); background: var(--green-bg);
+    padding: 6px 10px; border-radius: 999px; white-space: nowrap; align-self: flex-start;
   }
-  .slot-time { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.01em; }
-  .slot-total { font-size: .85rem; color: var(--muted); }
-  .rows { list-style: none; margin: 0; padding: 0; }
-  .row {
-    display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; align-items: center;
-    padding: 12px 0; border-bottom: 1px solid var(--line);
+  .badge.off { color: var(--muted); background: var(--surface2); }
+  .live { font-size: 12px; font-weight: 600; color: var(--green); }
+  .deal { color: var(--deal); }
+  .btn {
+    min-height: 44px; display: inline-flex; align-items: center; padding: 0 20px; border-radius: 999px;
+    background: var(--ink); color: var(--white); text-decoration: none; font-weight: 600; font-size: 14px; border: 1px solid var(--ink);
   }
-  .where .main { display: block; font-weight: 700; }
-  .where .sub { display: block; font-size: .85rem; color: var(--muted); }
-  .courts { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px; font-size: .88rem; }
-  .courts .chip { padding: 1px 7px; background: var(--white); border: 1px solid var(--line); border-radius: 5px; font-weight: 600; }
-  .courts .count { color: var(--muted); }
-  .buy { display: flex; align-items: center; gap: 12px; grid-row: 1; grid-column: 2; }
-  .price { font-weight: 600; color: var(--ink); }
-  a.book {
-    display: inline-block; padding: 9px 18px; border-radius: 8px; text-decoration: none;
-    background: var(--floor); color: var(--white); font-weight: 700;
-  }
-  a.book:hover { background: var(--floor-deep); }
-  @media (min-width: 640px) {
-    .row { grid-template-columns: minmax(150px, 1fr) 2fr auto; }
-    .courts { grid-column: auto; }
-    .buy { grid-row: auto; grid-column: auto; }
-  }
-  .empty { margin: 28px 0 0; padding: 20px 0; border-top: 2px solid var(--ink); }
-  .empty strong { display: block; font-size: 1.1rem; margin-bottom: 4px; }
+  .btn:hover { color: var(--white); background: #24324A; }
+  .btn.ghost { background: var(--white); color: var(--ink); }
+  .btn.ghost:hover { color: var(--ink); background: var(--surface2); }
 
-  footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: .85rem; color: var(--muted); max-width: 44em; }
+  /* slot pills */
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill {
+    min-height: 44px; display: inline-flex; align-items: center; gap: 8px; padding: 0 14px;
+    border-radius: 999px; border: 1px solid var(--line2); text-decoration: none; color: var(--ink); background: var(--white);
+  }
+  .pill:hover { border-color: var(--ink); color: var(--ink); }
+  .pill .t { font-size: 15px; font-weight: 600; }
+  .pill .wd { font-size: 13px; color: var(--muted); font-weight: 500; }
+  .pill .p { font-size: 13px; font-weight: 600; color: var(--muted); }
+  .pill .p.deal { color: var(--deal); }
+
+  /* ---------- home ---------- */
+  .grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+  .card { display: flex; flex-direction: column; gap: 12px; text-decoration: none; color: var(--ink); }
+  .card:hover { color: var(--ink); }
+  .card .img { position: relative; height: 170px; border-radius: 14px; background: var(--surface); overflow: hidden; transition: background .15s; }
+  .card:hover .img { background: #E4E8ED; }
+  .card .price-tag {
+    position: absolute; left: 12px; top: 12px; background: var(--white); color: var(--deal);
+    font-weight: 700; font-size: 15px; padding: 6px 12px; border-radius: 999px;
+  }
+  .card .name { font-size: 16px; font-weight: 600; }
+  .card .sub { font-size: 14px; color: var(--muted); }
+  .card .stack { display: flex; flex-direction: column; gap: 2px; }
+  .card .stack .badge { margin-top: 6px; }
+  .steps {
+    margin: 0; padding: 32px; list-style: none; background: var(--surface2); border-radius: 20px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px;
+  }
+  .steps li { display: flex; flex-direction: column; gap: 6px; }
+  .steps .n { font-family: var(--display); font-size: 40px; font-weight: 700; line-height: 1; }
+  .steps strong { font-size: 16px; }
+  .steps span:last-child { font-size: 15px; color: var(--muted); }
+
+  /* ---------- results ---------- */
+  .results-head { padding-top: 36px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px; }
+  .results-head h1 { margin: 0; font-size: clamp(22px, 3vw, 28px); font-weight: 600; letter-spacing: -.01em; }
+  .results-head p { margin: 4px 0 0; font-size: 14px; color: var(--muted); }
+  .seg { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .seg .lbl { font-size: 14px; color: var(--muted); margin-right: 4px; }
+  .seg a {
+    min-height: 40px; display: inline-flex; align-items: center; padding: 0 16px; border-radius: 999px;
+    border: 1px solid var(--line); background: var(--white); color: var(--ink); font-weight: 500; font-size: 14px; text-decoration: none;
+  }
+  .seg a[aria-current="true"] { background: var(--ink); border-color: var(--ink); color: var(--white); font-weight: 600; }
+  .day-h { margin: 36px 0 0; font-size: 17px; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid var(--ink); }
+  .list { display: flex; flex-direction: column; max-width: 900px; }
+  .hallrow { display: flex; flex-wrap: wrap; gap: 20px; padding: 20px 0; border-bottom: 1px solid var(--line); }
+  .hallrow:last-child { border-bottom: 0; }
+  .thumb { flex: 0 0 120px; height: 90px; border-radius: 12px; background: var(--surface); overflow: hidden; display: block; }
+  .thumb.off { background: var(--surface2); }
+  .hallrow .body { flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+  .hallrow .title { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px; align-items: baseline; }
+  .hallrow .title a, .hallrow .title > span:first-child { font-size: 17px; font-weight: 600; text-decoration: none; }
+  .hallrow .meta { font-size: 13px; color: var(--muted); }
+  .hallrow p { margin: 0; font-size: 14px; color: var(--muted); }
+  .hallrow p a { font-weight: 600; }
+  @media (max-width: 560px) { .thumb { display: none; } }
+  .empty { margin-top: 32px; padding: 28px; border-radius: 20px; background: var(--surface2); max-width: 900px; }
+  .empty strong { display: block; font-size: 18px; margin-bottom: 4px; }
+  .empty p { margin: 0 0 16px; color: var(--muted); }
+  .empty .acts { display: flex; flex-wrap: wrap; gap: 10px; }
+
+  /* ---------- directory ---------- */
+  .filters {
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+    padding-top: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--line);
+  }
+  .fpill {
+    position: relative; min-height: 40px; display: inline-flex; align-items: center; gap: 6px;
+    padding: 0 34px 0 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--white); font-size: 14px;
+  }
+  .fpill:first-child { background: var(--ink); border-color: var(--ink); color: var(--white); }
+  .fpill .k { color: inherit; opacity: .75; }
+  .fpill select { appearance: none; -webkit-appearance: none; border: 0; background: transparent; font-weight: 600; font-size: 14px; cursor: pointer; padding: 8px 0; }
+  .fpill select option { color: var(--ink); }
+  .fpill::after { content: '▾'; position: absolute; right: 14px; pointer-events: none; font-size: 12px; }
+  .filters .spacer { flex: 1 1 auto; }
+  .dir { display: flex; flex-direction: column; gap: 8px; max-width: 900px; padding-top: 24px; }
+  .hcard { display: flex; flex-direction: column; gap: 16px; padding: 16px; border-radius: 18px; border: 1px solid var(--line); }
+  .hcard.open { border: 2px solid var(--ink); padding: 15px; }
+  .hcard .top-row { display: flex; flex-wrap: wrap; gap: 16px; }
+  .hcard .thumb { flex-basis: 132px; height: 100px; }
+  .hcard .info { flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+  .hcard .line1 { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+  .hcard .line1 a { font-size: 18px; font-weight: 600; text-decoration: none; }
+  .hcard .from { font-size: 15px; font-weight: 700; color: var(--deal); white-space: nowrap; }
+  .hcard .meta { font-size: 14px; color: var(--muted); }
+  .hcard .line3 { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-top: 4px; }
+  .toggle {
+    min-height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--ink);
+    background: var(--white); font-weight: 600; font-size: 13px;
+  }
+  .toggle:hover { background: var(--surface2); }
+  .hcard .acts { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+  .hcard .acts .btn { min-height: 40px; font-size: 13px; padding: 0 18px; }
+
+  /* ---------- hall page ---------- */
+  .crumbs { padding-top: 24px; font-size: 13px; color: var(--muted); }
+  .crumbs a { color: var(--muted); }
+  .hallhead { padding-top: 24px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px; }
+  .hallhead .l { display: flex; flex-direction: column; gap: 8px; }
+  .hallhead h1 { color: var(--ink); }
+  .hallhead p { margin: 0; font-size: 15px; color: var(--muted); }
+  .hallhead .r { display: flex; flex-wrap: wrap; gap: 10px; }
+  .hallhead .btn { min-height: 48px; padding: 0 22px; }
+  .gridwrap { overflow-x: auto; margin: 0 -6px; }
+  table.slots { border-collapse: separate; border-spacing: 6px; width: 100%; min-width: 720px; font-size: 14px; table-layout: fixed; }
+  table.slots th.first { width: 64px; }
+  table.slots th.pc { width: 96px; }
+  table.slots th.first, table.slots tbody th { position: sticky; left: 0; z-index: 1; background: var(--white); box-shadow: -6px 0 0 var(--white); }
+  table.slots th { padding: 8px 4px; font-weight: 600; text-align: center; white-space: nowrap; }
+  table.slots thead th .w { display: block; }
+  table.slots thead th .d { display: block; font-weight: 500; color: var(--muted); font-size: 13px; }
+  table.slots th.first, table.slots tbody th { text-align: left; }
+  table.slots .first { color: var(--muted); font-weight: 500; }
+  table.slots th.pc { text-align: right; color: var(--muted); font-weight: 500; }
+  table.slots tbody th { padding: 4px; font-weight: 600; }
+  table.slots td { padding: 0; text-align: center; }
+  table.slots td.pc { text-align: right; padding: 4px; font-weight: 600; white-space: nowrap; }
+  .cell { display: flex; align-items: center; justify-content: center; min-height: 44px; border-radius: 999px; }
+  a.cell { background: var(--green-bg); color: var(--green-ink); font-weight: 600; text-decoration: none; }
+  a.cell:hover { background: #CFEBDA; color: var(--green-ink); }
+  span.cell { background: var(--surface2); color: var(--muted); }
+  .weeknav { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  /* ---------- footer ---------- */
+  footer { margin-top: 80px; background: var(--ink); color: var(--soft); font-size: 14px; }
+  footer .wrap { padding-top: 40px; padding-bottom: 40px; display: flex; flex-wrap: wrap; gap: 16px 40px; justify-content: space-between; }
+  footer .logo { flex: 0 0 auto; font-size: 22px; }
+  footer .txt { flex: 1 1 420px; max-width: 640px; }
   footer p { margin: 0 0 8px; }
-  @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
+
+  .loading { padding: 64px 0; color: var(--muted); }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <h1>Free badminton courts in Helsinki</h1>
-    <p class="lede">Pick a day and the hours you want to play. When you find a court, you book on the venue's own site.</p>
-  </header>
-
-  <main>
-    <h2 class="sr">Day</h2>
-    <div class="days" id="days" role="group" aria-label="Day"></div>
-
-    <h2 class="sr">Hours</h2>
-    <div class="presets" id="presets" role="group" aria-label="Quick pick">
-      <button type="button" class="preset" data-p="morning" aria-pressed="false">Morning</button>
-      <button type="button" class="preset" data-p="afternoon" aria-pressed="false">Afternoon</button>
-      <button type="button" class="preset" data-p="evening" aria-pressed="false">Evening</button>
-      <button type="button" class="preset" data-p="all" aria-pressed="false">All day</button>
-    </div>
-    <div class="hours" id="hours" role="group" aria-label="Start hour"></div>
-    <p class="hint">Tap hours to add or remove them. The number under each hour is how many courts have a free slot starting then.</p>
-
-    <div id="notice" role="status"></div>
-    <div class="results" id="results" aria-live="polite"></div>
-    <p class="updated" id="updated"></p>
-    <noscript><p class="notice">This page needs JavaScript to show court times.</p></noscript>
-  </main>
-
-  <footer>
-    <p>Times come from Meilahden liikuntakeskus and Urheiluhallit (Kallio, Pasila, Mäkelänrinne) and can be a few minutes behind. Prices shown are a guide. You see the final price when you book.</p>
-    <p>You book and pay on the venue's site. This is an independent project, not run by the venues. Visit statistics are anonymous and cookie-free (Umami).</p>
-  </footer>
-</div>
+<div id="app"><p class="wrap loading">Ladataan vuoroja… / Loading court times…</p></div>
+<noscript><p class="wrap notice">Tämä sivu tarvitsee JavaScriptin. / This page needs JavaScript to show court times.</p></noscript>
 
 <script>
 (() => {
@@ -181,174 +315,690 @@
   }
   const track = (name, props) => { try { if (window.umami) window.umami.track(name, props); } catch (e) {} };
 
-  // ---- State ----
-  const HOURS = Array.from({ length: 16 }, (_, i) => i + 7);   // start hours 07..22
-  const PRESETS = { morning: [7, 11], afternoon: [12, 16], evening: [17, 22], all: [7, 22] };
-  const $ = (s) => document.querySelector(s);
-  let data = null, dates = [], selDate = null, nowStr = '';
-  let selHours = new Set(range(...PRESETS.evening));
+  // ---- Halls we have live data for. Keyed by venue + hall from data.json. ----
+  const HALLS = [
+    { id: 'kallio', venue: 'urheiluhallit', hall: 'Kallio', name: 'Helsingin urheilutalo', area: 'Kallio', courts: 4 },
+    { id: 'meilahti', venue: 'meilahti', hall: 'Forza', name: 'Meilahden liikuntakeskus', area: 'Meilahti', courts: 10 },
+    { id: 'makelanrinne', venue: 'urheiluhallit', hall: 'Mäkelänrinne', name: 'Mäkelänrinteen uintikeskus', area: 'Mäkelänrinne', courts: 5 },
+    { id: 'pasila', venue: 'urheiluhallit', hall: 'Pasila', name: 'Pasilan urheiluhalli', area: 'Pasila', courts: 10 },
+  ];
+  const HALL_BY_KEY = {}, HALL_BY_ID = {};
+  HALLS.forEach((h) => { HALL_BY_KEY[h.venue + '|' + h.hall] = h; HALL_BY_ID[h.id] = h; });
 
-  function range(a, b) { const r = []; for (let i = a; i <= b; i++) r.push(i); return r; }
+  // Start-hour ranges (inclusive): a slot starting 22:00 counts as evening.
+  const PRESETS = [['morning', 7, 11], ['day', 12, 16], ['evening', 17, 22], ['all', 7, 22]];
+
+  // ---- Text ----
+  const STR = {
+    fi: {
+      locale: 'fi-FI',
+      docTitle: 'Court Finder – vapaat sulkapallokentät Helsingissä',
+      navLabel: 'Päävalikko', navSearch: 'Haku', navHalls: 'Hallit',
+      langBtn: 'EN', langLabel: 'In English',
+      heroTitle: 'Löydä vapaa kenttä',
+      heroLede: 'Helsingin sulkapallohallien vapaat vuorot yhdellä haulla. Varaat suoraan hallilta.',
+      formLabel: 'Hae vapaita vuoroja',
+      sport: 'Laji', badminton: 'Sulkapallo', day: 'Päivä', time: 'Aika', area: 'Alue', allAreas: 'Koko Helsinki', search: 'Hae',
+      today: 'Tänään', tomorrow: 'Huomenna', weekend: 'Viikonloppu',
+      preset: { morning: 'Aamu 7–11', day: 'Päivä 12–16', evening: 'Ilta 17–22', all: 'Koko päivä' },
+      qTonight: 'Tänään illalla', qTomorrowMorning: 'Huomenna aamulla', qWeekend: 'Viikonloppuna',
+      cheapToday: 'Halvimmat vapaat kentät tänä iltana', cheapTomorrow: 'Halvimmat vapaat kentät huomenna illalla',
+      seeAll: 'Näytä kaikki ›',
+      hallsHome: 'Sulkapallohallit Helsingissä', allHalls: 'Kaikki hallit ›',
+      courtsN: (n) => `${n} kenttää`, bcourtsN: (n) => `${n} sulkapallokenttää`,
+      slotsN: (n) => `${n} ${n === 1 ? 'vapaa vuoro' : 'vapaata vuoroa'}`,
+      freeToday: (n) => n ? `${n} ${n === 1 ? 'vapaa vuoro' : 'vapaata vuoroa'} tänään` : 'Ei vapaita tänään',
+      noInfo: 'Ei vuorotietoja',
+      steps: [
+        ['Valitse päivä ja aika', 'Kerro milloin ja missä haluat pelata.'],
+        ['Vertaa vapaita vuoroja', 'Kaikki hallit, ajat ja hinnat samassa näkymässä.'],
+        ['Varaa hallilta', 'Linkki vie suoraan hallin omaan varauspalveluun.'],
+      ],
+      resultsTitle: (n, h) => `${n} ${n === 1 ? 'vapaa vuoro' : 'vapaata vuoroa'} ${h} hallissa`,
+      priceNote: 'Hinta = kenttä / tunti',
+      updated: (rel) => `päivitetty ${rel}`,
+      sortLabel: 'Järjestys', sortTime: 'Aika', sortPrice: 'Hinta', sortFree: 'Eniten vapaana',
+      unavailable: 'Vuorotietoja ei juuri nyt saatavilla.', seeVenue: 'Katso hallin sivulta ↗',
+      noneTitle: 'Ei vapaita kenttiä valittuna aikana', noneBody: 'Kokeile toista aikaa tai päivää.',
+      tryAllDay: 'Näytä koko päivä', tryOtherDay: 'Kokeile seuraavaa päivää',
+      at: (t) => `klo ${t}`,
+      freeCourts: (n) => `${n} ${n === 1 ? 'kenttä' : 'kenttää'} vapaana`,
+      bookAria: (hall, when, n, price) => `Varaa ${hall}, ${when}, ${n} ${n === 1 ? 'kenttä' : 'kenttää'} vapaana${price ? ', ' + price : ''}. Avautuu hallin sivulle.`,
+      hallsTitle: 'Hallit Helsingissä',
+      hallsLede: (n) => `${n} sulkapallohallia · kaikista vapaat vuorot reaaliajassa`,
+      available: 'Vapaana', from: (p) => `alk. ${p}`, liveSlots: 'Live-vuorot',
+      showSlots: 'Näytä vuorot ▾', hideSlots: 'Piilota vuorot ▴', openHall: 'Avaa hallin sivu', slotsOnVenue: 'Vuorot hallin sivulla ↗',
+      noSlotsSel: 'Ei vapaita vuoroja valittuna aikana.',
+      crumbs: 'Murupolku', crumbHalls: 'Hallit', crumbSport: 'Sulkapallo',
+      fromPerH: 'alkaen', perH: '/h',
+      directions: 'Reittiohjeet', bookOnVenue: 'Varaa hallin sivulla ↗',
+      freeSlots: 'Vapaat vuorot', gridNote: 'Luku = vapaita kenttiä',
+      timeCol: 'Aika', priceCol: 'Hinta',
+      prevWeek: '‹ Edelliset 7 päivää', nextWeek: 'Seuraavat 7 päivää ›',
+      noSlotsWeek: 'Ei vapaita vuoroja näinä päivinä.',
+      cellFull: 'ei vapaita kenttiä',
+      others: 'Muut sulkapallohallit',
+      notFound: 'Hallia ei löytynyt', backToHalls: 'Takaisin halleihin',
+      loading: 'Ladataan vuoroja…',
+      loadFail: 'Vuoroja ei saatu ladattua',
+      loadFailBody: 'Lataa sivu uudelleen hetken päästä. Jos ongelma jatkuu, katso hallien omat sivut.',
+      venueDown: (name) => `${name}: vuoroja ei saatu juuri nyt, joten sen kentät puuttuvat.`,
+      stale: (h) => `Vuorot ovat ${h} tuntia vanhoja. Tarkista hallin sivulta ennen lähtöä.`,
+      footRefresh: 'Vuorot päivittyvät noin 15 minuutin välein.',
+      footSources: 'Tiedot: Meilahden liikuntakeskus ja Urheiluhallit (Kallio, Pasila, Mäkelänrinne). Hinnat ovat suuntaa-antavia, lopullisen hinnan näet varatessa.',
+      footBook: 'Varaat ja maksat hallin omassa palvelussa. Court Finder on itsenäinen projekti, ei hallien ylläpitämä. Kävijätilastot ovat anonyymejä eivätkä käytä evästeitä (Umami).',
+      updatedAt: (t) => `Vuorot päivitetty klo ${t}.`,
+      justNow: 'juuri nyt',
+    },
+    en: {
+      locale: 'en-GB',
+      docTitle: 'Court Finder – free badminton courts in Helsinki',
+      navLabel: 'Main menu', navSearch: 'Search', navHalls: 'Halls',
+      langBtn: 'FI', langLabel: 'Suomeksi',
+      heroTitle: 'Find a free court',
+      heroLede: 'Free badminton courts across Helsinki in one search. You book directly with the hall.',
+      formLabel: 'Search free courts',
+      sport: 'Sport', badminton: 'Badminton', day: 'Day', time: 'Time', area: 'Area', allAreas: 'All of Helsinki', search: 'Search',
+      today: 'Today', tomorrow: 'Tomorrow', weekend: 'Weekend',
+      preset: { morning: 'Morning 7–11', day: 'Daytime 12–16', evening: 'Evening 17–22', all: 'All day' },
+      qTonight: 'Tonight', qTomorrowMorning: 'Tomorrow morning', qWeekend: 'This weekend',
+      cheapToday: 'Cheapest free courts tonight', cheapTomorrow: 'Cheapest free courts tomorrow evening',
+      seeAll: 'See all ›',
+      hallsHome: 'Badminton halls in Helsinki', allHalls: 'All halls ›',
+      courtsN: (n) => `${n} courts`, bcourtsN: (n) => `${n} badminton courts`,
+      slotsN: (n) => `${n} free ${n === 1 ? 'slot' : 'slots'}`,
+      freeToday: (n) => n ? `${n} free ${n === 1 ? 'slot' : 'slots'} today` : 'Nothing free today',
+      noInfo: 'No live data',
+      steps: [
+        ['Pick a day and time', 'Tell us when and where you want to play.'],
+        ['Compare free slots', 'Every hall, time and price in one view.'],
+        ['Book with the hall', 'The link takes you to the hall’s own booking site.'],
+      ],
+      resultsTitle: (n, h) => `${n} free ${n === 1 ? 'slot' : 'slots'} in ${h} ${h === 1 ? 'hall' : 'halls'}`,
+      priceNote: 'Price = one court / hour',
+      updated: (rel) => `updated ${rel}`,
+      sortLabel: 'Sort', sortTime: 'Time', sortPrice: 'Price', sortFree: 'Most free',
+      unavailable: 'Court times are not available right now.', seeVenue: 'Check the hall’s site ↗',
+      noneTitle: 'No free courts at that time', noneBody: 'Try another time or day.',
+      tryAllDay: 'Show the whole day', tryOtherDay: 'Try the next day',
+      at: (t) => t,
+      freeCourts: (n) => `${n} ${n === 1 ? 'court' : 'courts'} free`,
+      bookAria: (hall, when, n, price) => `Book ${hall}, ${when}, ${n} ${n === 1 ? 'court' : 'courts'} free${price ? ', ' + price : ''}. Opens the hall’s site.`,
+      hallsTitle: 'Halls in Helsinki',
+      hallsLede: (n) => `${n} badminton halls · live free slots for all of them`,
+      available: 'Free', from: (p) => `from ${p}`, liveSlots: 'Live slots',
+      showSlots: 'Show slots ▾', hideSlots: 'Hide slots ▴', openHall: 'Open hall page', slotsOnVenue: 'Times on the hall’s site ↗',
+      noSlotsSel: 'No free slots at that time.',
+      crumbs: 'Breadcrumb', crumbHalls: 'Halls', crumbSport: 'Badminton',
+      fromPerH: 'from', perH: '/h',
+      directions: 'Directions', bookOnVenue: 'Book on the hall’s site ↗',
+      freeSlots: 'Free slots', gridNote: 'Number = free courts',
+      timeCol: 'Time', priceCol: 'Price',
+      prevWeek: '‹ Previous 7 days', nextWeek: 'Next 7 days ›',
+      noSlotsWeek: 'No free slots on these days.',
+      cellFull: 'no free courts',
+      others: 'Other badminton halls',
+      notFound: 'Hall not found', backToHalls: 'Back to halls',
+      loading: 'Loading court times…',
+      loadFail: 'Court times could not be loaded',
+      loadFailBody: 'Reload the page in a minute. If it keeps failing, check the halls’ own sites.',
+      venueDown: (name) => `${name} could not be loaded just now, so its courts are missing.`,
+      stale: (h) => `These times are ${h} hours old. Check the hall’s site before you go.`,
+      footRefresh: 'Court times refresh about every 15 minutes.',
+      footSources: 'Data: Meilahti sports centre and Urheiluhallit (Kallio, Pasila, Mäkelänrinne). Prices are a guide; you see the final price when you book.',
+      footBook: 'You book and pay on the hall’s own site. Court Finder is an independent project, not run by the halls. Visit statistics are anonymous and cookie-free (Umami).',
+      updatedAt: (t) => `Court times updated at ${t} (Helsinki time).`,
+      justNow: 'just now',
+    },
+  };
+
+  let lang = 'fi';
+  try { const saved = localStorage.getItem('cf-lang'); if (saved === 'fi' || saved === 'en') lang = saved; } catch (e) {}
+  const T = () => STR[lang];
+
+  // ---- Helpers ----
   const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const eur = (n) => '€' + (Number.isInteger(n) ? n : n.toFixed(2));
-
-  function helsinkiNow() {
-    return new Intl.DateTimeFormat('sv-SE', {
-      timeZone: 'Europe/Helsinki', year: 'numeric', month: 'numeric', day: 'numeric',
-      hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
-    }).format(new Date()).replace(',', '');
-  }
   const pad = (n) => String(n).padStart(2, '0');
-  function normNow() {            // "2026-11-7 17:04" -> "2026-11-07 17:04"
-    const [d, t] = helsinkiNow().split(' ');
-    const [y, m, dd] = d.split('-');
-    return `${y}-${pad(m)}-${pad(dd)} ${t}`;
-  }
   const asDate = (iso) => new Date(iso + 'T12:00:00');
-  const weekday = (iso) => asDate(iso).toLocaleDateString('en-GB', { weekday: 'short' });
-  const longDate = (iso) => asDate(iso).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+  const num = (n) => new Intl.NumberFormat(T().locale, { minimumFractionDigits: Number.isInteger(n) ? 0 : 2, maximumFractionDigits: 2 }).format(n);
+  const eur = (n) => n == null ? '' : lang === 'fi' ? `${num(n)} €` : `€${num(n)}`;
+  const eurRange = (a, b) => {
+    if (a == null) return '';
+    if (b == null || b === a) return eur(a);
+    return lang === 'fi' ? `${num(a)}–${num(b)} €` : `€${num(a)}–${num(b)}`;
+  };
+  const minOf = (xs) => { const v = xs.filter((x) => x != null); return v.length ? Math.min(...v) : null; };
+  const maxOf = (xs) => { const v = xs.filter((x) => x != null); return v.length ? Math.max(...v) : null; };
+
+  function helsinkiNow() {            // -> "2026-11-07 17:04"
+    const parts = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Europe/Helsinki', year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+    }).formatToParts(new Date());
+    const g = (t) => parts.find((p) => p.type === t).value;
+    return `${g('year')}-${g('month')}-${g('day')} ${g('hour')}:${g('minute')}`;
+  }
+  const weekdayShort = (iso) => asDate(iso).toLocaleDateString(T().locale, { weekday: 'short' }).replace('.', '');
+  const shortDate = (iso) => lang === 'fi' ? `${+iso.slice(8)}.${+iso.slice(5, 7)}.` : asDate(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+  const longDate = (iso) => asDate(iso).toLocaleDateString(T().locale, { weekday: 'long', day: 'numeric', month: 'long' });
+  const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
   // ---- Data ----
+  let data = null, dates = [], nowStr = '';
+  const today = () => nowStr.slice(0, 10);
+  function dayName(iso, withDate) {
+    const i = dates.indexOf(iso);
+    const rel = iso === today() ? T().today : (i >= 0 && dates[i - 1] === today() ? T().tomorrow : null);
+    const plain = `${cap(weekdayShort(iso))} ${shortDate(iso)}`;
+    if (!rel) return plain;
+    return withDate ? `${rel}, ${weekdayShort(iso)} ${shortDate(iso)}` : rel;
+  }
+  function weekendDays() {
+    const i = dates.findIndex((d) => [0, 6].includes(asDate(d).getDay()));
+    if (i < 0) return [];
+    return asDate(dates[i]).getDay() === 6 && dates[i + 1] ? [dates[i], dates[i + 1]] : [dates[i]];
+  }
+  // Rows still in the future, with hall info attached.
   function rowsFor(date) {
     return (data.days[date] || []).filter((r) => `${date} ${r.start}` >= nowStr);
   }
-  function hourCounts(rows) {
-    const c = {};
-    rows.forEach((r) => { const h = parseInt(r.start.slice(0, 2), 10); c[h] = (c[h] || 0) + r.count; });
-    return c;
+  const venueOk = (h) => !!(data.venues[h.venue] && data.venues[h.venue].ok);
+
+  // ---- Search state (lives in the URL hash) ----
+  function readSel(p) {
+    const d = p.get('d');
+    const day = d === 'we' || dates.includes(d) ? d : dates[0];
+    let from = 17, to = 22;
+    const m = /^(\d{1,2})-(\d{1,2})$/.exec(p.get('t') || '');
+    if (m && +m[1] >= 0 && +m[2] <= 23 && +m[1] <= +m[2]) { from = +m[1]; to = +m[2]; }
+    const a = p.get('a');
+    return {
+      d: day, days: day === 'we' ? weekendDays() : [day], from, to,
+      area: HALL_BY_ID[a] ? a : 'all',
+      sort: p.get('s') || '',
+    };
+  }
+  const matches = (r, sel) => r.hour >= sel.from && r.hour <= sel.to && (sel.area === 'all' || r.h.id === sel.area);
+  const selQuery = (sel, extra) => {
+    const q = { d: sel.d, t: `${sel.from}-${sel.to}` };
+    if (sel.area !== 'all') q.a = sel.area;
+    return new URLSearchParams(Object.assign(q, extra || {})).toString();
+  };
+
+  // ---- Shared markup ----
+  const LINES_HERO = `<svg class="lines" aria-hidden="true" viewBox="0 0 1280 620" preserveAspectRatio="xMidYMid slice"><g fill="none" stroke="#fff" stroke-width="3"><rect x="240" y="90" width="800" height="440"/><rect x="240" y="122" width="800" height="376"/><line x1="640" y1="90" x2="640" y2="530"/><line x1="520" y1="90" x2="520" y2="530"/><line x1="760" y1="90" x2="760" y2="530"/><line x1="288" y1="90" x2="288" y2="530"/><line x1="992" y1="90" x2="992" y2="530"/><line x1="240" y1="310" x2="520" y2="310"/><line x1="760" y1="310" x2="1040" y2="310"/></g></svg>`;
+  const ART = `<svg class="art" aria-hidden="true" viewBox="0 0 280 170" preserveAspectRatio="xMidYMid meet"><g fill="none" stroke="#D3D8E0" stroke-width="2"><rect x="40" y="30" width="200" height="110"/><line x1="140" y1="30" x2="140" y2="140"/><line x1="40" y1="85" x2="100" y2="85"/><line x1="180" y1="85" x2="240" y2="85"/><line x1="48" y1="30" x2="48" y2="140"/><line x1="232" y1="30" x2="232" y2="140"/></g></svg>`;
+  const SEARCH_ICON = `<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>`;
+
+  function topbar(active) {
+    const t = T();
+    return `<header class="top wrap">
+      <a class="logo" href="#/">Court Finder</a>
+      <nav class="nav" aria-label="${t.navLabel}">
+        <a href="#/" ${active === 'home' || active === 'haku' ? 'aria-current="page"' : ''}>${t.navSearch}</a>
+        <a href="#/hallit" ${active === 'hallit' || active === 'halli' ? 'aria-current="page"' : ''}>${t.navHalls}</a>
+      </nav>
+      <div class="tools"><button type="button" class="lang" id="lang-btn" data-lang lang="${lang === 'fi' ? 'en' : 'fi'}" aria-label="${t.langLabel}">${t.langBtn}</button></div>
+    </header>`;
   }
 
-  // ---- URL state (so a search can be shared) ----
-  function readHash() {
-    const p = new URLSearchParams(location.hash.slice(1));
-    const d = p.get('d'), h = p.get('h');
-    if (d && dates.includes(d)) selDate = d;
-    if (h) {
-      const set = new Set(h.split(',').map(Number).filter((n) => HOURS.includes(n)));
-      if (set.size) selHours = set;
-    }
+  function dayOptions(sel, withWeekend) {
+    const t = T();
+    const opts = dates.map((d) => `<option value="${d}" ${sel.d === d ? 'selected' : ''}>${esc(dayName(d, true))}</option>`);
+    if (withWeekend && weekendDays().length) opts.push(`<option value="we" ${sel.d === 'we' ? 'selected' : ''}>${t.weekend}</option>`);
+    return opts.join('');
   }
-  function writeHash() {
-    const h = [...selHours].sort((a, b) => a - b).join(',');
-    history.replaceState(null, '', `#d=${selDate}&h=${h}`);
+  function timeOptions(sel) {
+    const t = T();
+    const cur = `${sel.from}-${sel.to}`;
+    const opts = PRESETS.map(([k, a, b]) => `<option value="${a}-${b}" ${cur === `${a}-${b}` ? 'selected' : ''}>${t.preset[k]}</option>`);
+    if (!PRESETS.some(([, a, b]) => cur === `${a}-${b}`)) opts.push(`<option value="${cur}" selected>${sel.from}–${sel.to}</option>`);
+    return opts.join('');
+  }
+  function areaOptions(sel) {
+    const t = T();
+    return `<option value="all">${t.allAreas}</option>` +
+      [...HALLS].sort((a, b) => a.area.localeCompare(b.area, 'fi'))
+        .map((h) => `<option value="${h.id}" ${sel.area === h.id ? 'selected' : ''}>${esc(h.area)}</option>`).join('');
+  }
+  function searchForm(sel, compact) {
+    const t = T();
+    return `<form class="search ${compact ? 'compact' : ''}" data-search ${compact ? 'data-auto' : ''} role="search" aria-label="${t.formLabel}">
+      <div class="field"><span class="lbl">${t.sport}</span><span class="val">${t.badminton}</span></div>
+      <label class="field"><span class="lbl">${t.day}</span><select name="d" id="f-d">${dayOptions(sel, true)}</select></label>
+      <label class="field"><span class="lbl">${t.time}</span><select name="t" id="f-t">${timeOptions(sel)}</select></label>
+      <label class="field"><span class="lbl">${t.area}</span><select name="a" id="f-a">${areaOptions(sel)}</select></label>
+      <button class="go" type="submit">${SEARCH_ICON}${t.search}</button>
+    </form>`;
   }
 
-  // ---- Rendering ----
-  function renderDays() {
-    $('#days').innerHTML = dates.map((d, i) => {
-      const today = nowStr.slice(0, 10) === d;
-      const label = today ? 'Today' : weekday(d);
-      const num = `${+d.slice(8)}.${+d.slice(5, 7)}.`;
-      return `<button type="button" class="day" data-date="${d}" aria-pressed="${d === selDate}">` +
-             `<span class="w">${label}</span><span class="d">${num}</span></button>`;
-    }).join('');
+  function slotPill(r, date, showDay, dealPrice) {
+    const t = T(), h = r.h, v = data.venues[r.venue];
+    const priceTxt = eurRange(r.price, r.price_max);
+    const when = `${longDate(date)} ${t.at(r.start)}`;
+    const courts = r.courts ? ' (' + r.courts.join(', ') + ')' : '';
+    const isDeal = dealPrice != null && r.price === dealPrice;
+    return `<a class="pill" href="${esc(v.book_url)}" target="_blank" rel="noopener noreferrer" data-book
+      data-venue="${esc(r.venue)}" data-hall="${esc(r.hall)}" data-date="${date}" data-start="${esc(r.start)}"
+      title="${esc(t.freeCourts(r.count) + courts)}" aria-label="${esc(t.bookAria(h.name, when, r.count, priceTxt))}">
+      ${showDay ? `<span class="wd">${esc(cap(weekdayShort(date)))}</span>` : ''}<span class="t">${esc(r.start)}</span>${priceTxt ? `<span class="p ${isDeal ? 'deal' : ''}">${esc(priceTxt)}</span>` : ''}</a>`;
   }
-  function renderHours() {
-    const counts = hourCounts(rowsFor(selDate));
-    $('#hours').innerHTML = HOURS.map((h) => {
-      const n = counts[h] || 0;
-      const lvl = n === 0 ? 'l0' : n <= 2 ? 'l1' : n <= 5 ? 'l2' : 'l3';
-      return `<button type="button" class="hour ${lvl}" data-h="${h}" aria-pressed="${selHours.has(h)}" ` +
-             `aria-label="${pad(h)}:00, ${n} free courts">` +
-             `<span class="h">${pad(h)}</span><span class="c">${n}</span></button>`;
-    }).join('');
-    document.querySelectorAll('.preset').forEach((b) => {
-      const [a, z] = PRESETS[b.dataset.p];
-      const want = range(a, z);
-      const on = want.length === selHours.size && want.every((h) => selHours.has(h));
-      b.setAttribute('aria-pressed', on);
-    });
-  }
-  function renderResults() {
-    const box = $('#results');
-    if (selHours.size === 0) {
-      box.innerHTML = `<div class="empty"><strong>No hours selected</strong>Tap at least one hour above, or pick Morning, Afternoon or Evening.</div>`;
-      return;
-    }
-    const rows = rowsFor(selDate).filter((r) => selHours.has(parseInt(r.start.slice(0, 2), 10)));
-    if (!rows.length) {
-      box.innerHTML = `<div class="empty"><strong>No free courts at those hours</strong>` +
-        `Nothing is free on ${esc(longDate(selDate))} at the hours you picked. Try more hours or another day.</div>`;
-      return;
-    }
-    const groups = {};
-    rows.forEach((r) => { (groups[`${r.start}|${r.end}`] ||= []).push(r); });
-    const keys = Object.keys(groups).sort();
-    box.innerHTML = `<h2>${esc(longDate(selDate))}</h2>` + keys.map((k) => {
-      const [start, end] = k.split('|');
-      const list = groups[k];
-      const total = list.reduce((s, r) => s + r.count, 0);
-      return `<section class="slot"><div class="slot-head"><span class="slot-time">${start}–${end}</span>` +
-        `<span class="slot-total">${total} free ${total === 1 ? 'court' : 'courts'}</span></div><ul class="rows">` +
-        list.map((r) => {
-          const v = data.venues[r.venue];
-          const main = r.venue === 'meilahti' ? 'Meilahti' : r.hall;
-          const sub = r.venue === 'meilahti' ? 'Forza courts' : v.name;
-          const courts = r.courts
-            ? r.courts.map((c) => `<span class="chip">${esc(c)}</span>`).join('')
-            : `<span class="count">${r.count} ${r.count === 1 ? 'court' : 'courts'} free</span>`;
-          let price = '';
-          if (r.price != null) price = r.price_max != null && r.price_max !== r.price ? `${eur(r.price)}–${eur(r.price_max).slice(1)}` : eur(r.price);
-          const aria = `Book ${main} ${sub} at ${start} on ${longDate(selDate)}`;
-          return `<li class="row"><div class="where"><span class="main">${esc(main)}</span><span class="sub">${esc(sub)}</span></div>` +
-            `<div class="courts">${courts}</div>` +
-            `<div class="buy"><span class="price">${price}</span>` +
-            `<a class="book" href="${esc(v.book_url)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(aria)}" ` +
-            `data-venue="${esc(r.venue)}" data-hall="${esc(r.hall)}" data-start="${esc(r.start)}">Book</a></div></li>`;
-        }).join('') + `</ul></section>`;
-    }).join('');
-  }
-  function renderNotice() {
-    const msgs = [];
-    Object.values(data.venues).forEach((v) => { if (!v.ok) msgs.push(`${v.name} could not be loaded just now, so its courts are missing.`); });
+
+  function notices() {
+    const t = T(), msgs = [];
+    Object.values(data.venues).forEach((v) => { if (!v.ok) msgs.push(t.venueDown(v.name)); });
     const ageMin = (Date.now() - Date.parse(data.generated_at)) / 60000;
-    if (ageMin > 60) msgs.push(`These times are ${Math.round(ageMin / 60)} hours old. Check the venue's site before you go.`);
-    $('#notice').innerHTML = msgs.map((m) => `<p class="notice">${esc(m)}</p>`).join('');
-    const t = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Helsinki', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date(data.generated_at));
-    $('#updated').textContent = `Court times updated at ${t} (Helsinki time).`;
+    if (ageMin > 60) msgs.push(t.stale(Math.round(ageMin / 60)));
+    return `<div class="notices wrap" role="status">${msgs.map((m) => `<p class="notice">${esc(m)}</p>`).join('')}</div>`;
   }
-  function renderAll() { renderDays(); renderHours(); renderResults(); writeHash(); }
+  function updatedRel() {
+    const mins = Math.round((Date.now() - Date.parse(data.generated_at)) / 60000);
+    if (mins < 1) return T().justNow;
+    const rtf = new Intl.RelativeTimeFormat(T().locale, { numeric: 'auto' });
+    return mins < 90 ? rtf.format(-mins, 'minute') : rtf.format(-Math.round(mins / 60), 'hour');
+  }
+  function footer() {
+    const t = T();
+    let upd = '';
+    if (data) {
+      const hm = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Helsinki', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date(data.generated_at));
+      upd = `<p>${esc(t.updatedAt(hm))}</p>`;
+    }
+    return `<footer><div class="wrap">
+      <span class="logo">Court Finder</span>
+      <div class="txt"><p>${t.footRefresh}</p>${upd}<p>${t.footSources}</p><p>${t.footBook}</p></div>
+    </div></footer>`;
+  }
+
+  // ---- Views ----
+  function viewHome() {
+    const t = T();
+    const sel = readSel(new URLSearchParams());
+    const tomorrow = dates[1];
+    const we = weekendDays();
+
+    // Cheapest free court per hall this evening (or tomorrow evening if tonight is over).
+    const evening = { from: 17, to: 22, area: 'all' };
+    let dealDate = dates[0], dealRows = rowsFor(dealDate).filter((r) => matches(r, evening));
+    let dealTitle = t.cheapToday;
+    if (!dealRows.length && tomorrow) { dealDate = tomorrow; dealRows = rowsFor(tomorrow).filter((r) => matches(r, evening)); dealTitle = t.cheapTomorrow; }
+    const bestByHall = {};
+    dealRows.forEach((r) => {
+      const cur = bestByHall[r.h.id];
+      const p = r.price == null ? Infinity : r.price, cp = cur ? (cur.price == null ? Infinity : cur.price) : Infinity;
+      if (!cur || p < cp || (p === cp && r.start < cur.start)) bestByHall[r.h.id] = r;
+    });
+    const deals = Object.values(bestByHall).sort((a, b) => ((a.price ?? 1e9) - (b.price ?? 1e9)) || a.start.localeCompare(b.start)).slice(0, 4);
+
+    const quick = [
+      [t.qTonight, { d: dates[0], t: '17-22' }],
+      tomorrow ? [t.qTomorrowMorning, { d: tomorrow, t: '7-11' }] : null,
+      we.length ? [t.qWeekend, { d: 'we', t: '7-22' }] : null,
+    ].filter(Boolean);
+
+    return `<section class="band">${LINES_HERO}${topbar('home')}
+      <div class="hero">
+        <h1 tabindex="-1">${t.heroTitle}</h1>
+        <p>${t.heroLede}</p>
+        ${searchForm(sel, false)}
+        <div class="quick">${quick.map(([label, q]) => `<a href="#/haku?${new URLSearchParams(q)}">${label}</a>`).join('')}</div>
+      </div>
+    </section>
+    ${notices()}
+    <main class="wrap">
+      ${deals.length ? `<section class="section">
+        <div class="section-head"><h2>${dealTitle}</h2><a class="more" href="#/haku?d=${dealDate}&t=17-22&s=price">${t.seeAll}</a></div>
+        <div class="grid-cards">${deals.map((r) => `
+          <a class="card" href="#/halli/${r.h.id}">
+            <div class="img">${ART}${r.price != null ? `<span class="price-tag">${esc(eur(r.price))}</span>` : ''}</div>
+            <div><div class="name">${esc(r.h.name)}</div><div class="sub">${esc(r.h.area)} · ${esc(t.at(r.start))}</div></div>
+          </a>`).join('')}
+        </div>
+      </section>` : ''}
+      <section class="section">
+        <div class="section-head"><h2>${t.hallsHome}</h2><a class="more" href="#/hallit">${t.allHalls}</a></div>
+        <div class="grid-cards">${HALLS.map((h) => hallCard(h)).join('')}</div>
+      </section>
+      <section class="section">
+        <ol class="steps">${t.steps.map(([a, b], i) => `<li><span class="n">0${i + 1}</span><strong>${a}</strong><span>${b}</span></li>`).join('')}</ol>
+      </section>
+    </main>`;
+  }
+
+  function hallCard(h) {
+    const t = T();
+    const n = rowsFor(dates[0]).filter((r) => r.h === h).length;
+    const badge = venueOk(h) ? `<span class="badge ${n ? '' : 'off'}">${esc(t.freeToday(n))}</span>` : `<span class="badge off">${t.noInfo}</span>`;
+    return `<a class="card" href="#/halli/${h.id}">
+      <div class="img">${ART}</div>
+      <div class="stack"><div class="name">${esc(h.name)}</div><div class="sub">${esc(h.area)} · ${esc(t.courtsN(h.courts))}</div>${badge}</div>
+    </a>`;
+  }
+
+  let searchTimer;
+  function viewResults(p) {
+    const t = T();
+    const sel = readSel(p);
+    const sort = sel.sort === 'price' ? 'price' : 'time';
+    const multi = sel.days.length > 1;
+    const groups = sel.days.map((date) => ({ date, rows: rowsFor(date).filter((r) => matches(r, sel)) }));
+    const all = groups.flatMap((g) => g.rows);
+    const prices = new Set(all.map((r) => r.price).filter((x) => x != null));
+    const deal = prices.size > 1 ? Math.min(...prices) : null;
+    const hallCount = new Set(all.map((r) => r.h.id)).size;
+    const halls = HALLS.filter((h) => sel.area === 'all' || h.id === sel.area);
+    const down = halls.filter((h) => !venueOk(h));
+
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => track('search', { date: sel.d, hours: `${sel.from}-${sel.to}`, area: sel.area }), 800);
+
+    const sortLink = (key, label) => `<a href="#/haku?${selQuery(sel, key === 'time' ? {} : { s: key })}" ${sort === key ? 'aria-current="true"' : ''}>${label}</a>`;
+
+    const groupHtml = groups.map((g) => {
+      const items = halls.map((h) => ({ h, rows: g.rows.filter((r) => r.h === h) })).filter((x) => x.rows.length);
+      if (sort === 'price') items.sort((a, b) => ((minOf(a.rows.map((r) => r.price)) ?? 1e9) - (minOf(b.rows.map((r) => r.price)) ?? 1e9)) || a.rows[0].start.localeCompare(b.rows[0].start));
+      else items.sort((a, b) => a.rows[0].start.localeCompare(b.rows[0].start));
+      if (!items.length) return multi ? `<h2 class="day-h">${esc(cap(longDate(g.date)))}</h2><p class="muted">${t.noSlotsSel}</p>` : '';
+      return (multi ? `<h2 class="day-h">${esc(cap(longDate(g.date)))}</h2>` : '') + `<div class="list">${items.map(({ h, rows }) => {
+        const ordered = sort === 'price' ? [...rows].sort((a, b) => ((a.price ?? 1e9) - (b.price ?? 1e9)) || a.start.localeCompare(b.start)) : rows;
+        return `<article class="hallrow">
+          <a class="thumb" href="#/halli/${h.id}" tabindex="-1" aria-hidden="true">${ART}</a>
+          <div class="body">
+            <div class="title"><a href="#/halli/${h.id}">${esc(h.name)}</a><span class="meta">${esc(h.area)} · ${esc(t.courtsN(h.courts))}</span></div>
+            <div class="pills">${ordered.map((r) => slotPill(r, g.date, false, deal)).join('')}</div>
+          </div>
+        </article>`;
+      }).join('')}</div>`;
+    }).join('');
+
+    const downHtml = down.length ? `<div class="list">${down.map((h) => `<article class="hallrow">
+        <span class="thumb off" aria-hidden="true"></span>
+        <div class="body">
+          <div class="title"><span>${esc(h.name)}</span><span class="meta">${esc(h.area)} · ${esc(t.courtsN(h.courts))}</span></div>
+          <p>${t.unavailable} <a href="${esc(data.venues[h.venue].book_url)}" target="_blank" rel="noopener noreferrer">${t.seeVenue}</a></p>
+        </div>
+      </article>`).join('')}</div>` : '';
+
+    let emptyHtml = '';
+    if (!all.length) {
+      const acts = [];
+      if (!(sel.from === 7 && sel.to === 22)) acts.push(`<a class="btn" href="#/haku?${selQuery(sel, { t: '7-22' })}">${t.tryAllDay}</a>`);
+      const lastDay = sel.days[sel.days.length - 1];
+      const next = dates[dates.indexOf(lastDay) + 1];
+      if (next) acts.push(`<a class="btn ghost" href="#/haku?${selQuery(Object.assign({}, sel, { d: next }))}">${t.tryOtherDay}</a>`);
+      emptyHtml = `<div class="empty"><strong>${t.noneTitle}</strong><p>${t.noneBody}</p><div class="acts">${acts.join('')}</div></div>`;
+    }
+
+    const dayTxt = sel.d === 'we' ? t.weekend : dayName(sel.d, true);
+    return `<div class="band">${topbar('haku')}<div class="searchbar wrap">${searchForm(sel, true)}</div></div>
+    ${notices()}
+    <main class="wrap">
+      <div class="results-head">
+        <div>
+          <h1 tabindex="-1">${all.length ? t.resultsTitle(all.length, hallCount) : esc(dayTxt)}</h1>
+          <p>${all.length ? esc(dayTxt) + ' · ' : ''}${t.priceNote} · ${esc(t.updated(updatedRel()))}</p>
+        </div>
+        ${all.length ? `<div class="seg"><span class="lbl">${t.sortLabel}</span>${sortLink('time', t.sortTime)}${sortLink('price', t.sortPrice)}</div>` : ''}
+      </div>
+      ${emptyHtml}${groupHtml}${downHtml}
+    </main>`;
+  }
+
+  const expanded = new Set();
+  function viewHalls(p) {
+    const t = T();
+    const sel = readSel(p);
+    sel.area = 'all';
+    const sort = sel.sort === 'price' ? 'price' : 'free';
+    const multi = sel.days.length > 1;
+    const items = HALLS.map((h) => {
+      const rows = sel.days.flatMap((date) => rowsFor(date).filter((r) => r.h === h && matches(r, sel)).map((r) => ({ r, date })));
+      return { h, rows, min: minOf(rows.map((x) => x.r.price)), ok: venueOk(h) };
+    });
+    items.sort((a, b) => (b.ok - a.ok) || (sort === 'price'
+      ? ((a.min ?? 1e9) - (b.min ?? 1e9)) || (b.rows.length - a.rows.length)
+      : (b.rows.length - a.rows.length) || ((a.min ?? 1e9) - (b.min ?? 1e9))));
+    const prices = new Set(items.flatMap((x) => x.rows.map((y) => y.r.price)).filter((x) => x != null));
+    const deal = prices.size > 1 ? Math.min(...prices) : null;
+
+    const cards = items.map(({ h, rows, min, ok }) => {
+      const open = expanded.has(h.id) && ok;
+      const book = data.venues[h.venue].book_url;
+      return `<article class="hcard ${open ? 'open' : ''}">
+        <div class="top-row">
+          <a class="thumb" href="#/halli/${h.id}" tabindex="-1" aria-hidden="true">${ART}</a>
+          <div class="info">
+            <div class="line1"><a href="#/halli/${h.id}">${esc(h.name)}</a>${min != null ? `<span class="from">${esc(t.from(eur(min)))}</span>` : ''}</div>
+            <span class="meta">${esc(h.area)} · ${esc(t.bcourtsN(h.courts))}</span>
+            ${ok ? `<div class="line3"><span class="live">● ${t.liveSlots} · ${esc(t.slotsN(rows.length))}</span>
+              ${rows.length && !open ? `<button type="button" class="toggle" id="tg-${h.id}" data-toggle="${h.id}" aria-expanded="false">${t.showSlots}</button>` : ''}</div>`
+              : `<a href="${esc(book)}" target="_blank" rel="noopener noreferrer" style="font-size:13px;font-weight:600;padding-top:6px">${t.slotsOnVenue}</a>`}
+          </div>
+        </div>
+        ${open ? `<div class="pills">${rows.map(({ r, date }) => slotPill(r, date, multi, deal)).join('')}</div>
+          <div class="acts"><a class="btn" href="#/halli/${h.id}">${t.openHall}</a>
+          <button type="button" class="toggle" id="tg-${h.id}" data-toggle="${h.id}" aria-expanded="true" style="border-color:transparent;color:var(--muted)">${t.hideSlots}</button></div>` : ''}
+      </article>`;
+    }).join('');
+
+    return `<div class="band">${topbar('hallit')}
+      <div class="pagehead wrap"><h1 class="display" tabindex="-1">${t.hallsTitle}</h1><p>${esc(t.hallsLede(HALLS.length))}</p></div>
+    </div>
+    ${notices()}
+    <main class="wrap">
+      <form class="filters" data-filters>
+        <label class="fpill"><span class="k">${t.sport}:</span><select disabled aria-label="${t.sport}"><option>${t.badminton}</option></select></label>
+        <label class="fpill"><span class="k">${t.available}:</span><select name="d" id="h-d">${dayOptions(sel, true)}</select></label>
+        <label class="fpill"><span class="k">${t.time}:</span><select name="t" id="h-t">${timeOptions(sel)}</select></label>
+        <span class="spacer"></span>
+        <label class="fpill"><span class="k">${t.sortLabel}:</span><select name="s" id="h-s">
+          <option value="free" ${sort === 'free' ? 'selected' : ''}>${t.sortFree}</option>
+          <option value="price" ${sort === 'price' ? 'selected' : ''}>${t.sortPrice}</option>
+        </select></label>
+      </form>
+      <div class="dir">${cards}</div>
+    </main>`;
+  }
+
+  function viewHall(id, p) {
+    const t = T();
+    const h = HALL_BY_ID[id];
+    if (!h) {
+      return `<div class="band">${topbar('halli')}<div class="pagehead wrap"><h1 class="display" tabindex="-1">${t.notFound}</h1></div></div>
+        <main class="wrap"><p style="padding-top:32px"><a class="btn" href="#/hallit">${t.backToHalls}</a></p></main>`;
+    }
+    const v = data.venues[h.venue], ok = venueOk(h);
+    const hasNext = dates.length > 7;
+    const w = p.get('w') === '1' && hasNext ? 1 : 0;
+    const week = dates.slice(w * 7, w * 7 + 7);
+
+    // start time -> date -> {count, price, price_max, courts}
+    const grid = {};
+    week.forEach((date) => rowsFor(date).filter((r) => r.h === h).forEach((r) => {
+      const row = (grid[r.start] ||= {});
+      const c = row[date];
+      if (!c || r.count > c.count) row[date] = r;
+    }));
+    const starts = Object.keys(grid).sort();
+    const allMin = minOf(dates.flatMap((d) => rowsFor(d).filter((r) => r.h === h).map((r) => r.price)));
+    const weekPrices = new Set(starts.flatMap((s) => Object.values(grid[s]).map((r) => r.price)).filter((x) => x != null));
+    const deal = weekPrices.size > 1 ? Math.min(...weekPrices) : null;
+
+    const table = starts.length ? `<div class="gridwrap"><table class="slots">
+      <thead><tr><th scope="col" class="first">${t.timeCol}</th>
+        ${week.map((d) => `<th scope="col"><span class="w">${esc(d === today() ? t.today : cap(weekdayShort(d)))}</span><span class="d">${esc(shortDate(d))}</span></th>`).join('')}
+        <th scope="col" class="pc">${t.priceCol}</th></tr></thead>
+      <tbody>${starts.map((s) => {
+        const cells = week.map((d) => grid[s][d]);
+        const pMin = minOf(cells.map((r) => r && r.price)), pMax = maxOf(cells.map((r) => r && r.price_max));
+        return `<tr><th scope="row">${esc(s)}</th>${cells.map((r, i) => {
+          const d = week[i];
+          if (!r) return `<td><span class="cell" aria-label="${esc(longDate(d) + ' ' + t.at(s) + ': ' + t.cellFull)}">–</span></td>`;
+          const courts = r.courts ? ' (' + r.courts.join(', ') + ')' : '';
+          return `<td><a class="cell" href="${esc(v.book_url)}" target="_blank" rel="noopener noreferrer" data-book
+            data-venue="${esc(r.venue)}" data-hall="${esc(r.hall)}" data-date="${d}" data-start="${esc(s)}"
+            title="${esc(t.freeCourts(r.count) + courts)}" aria-label="${esc(t.bookAria(h.name, longDate(d) + ' ' + t.at(s), r.count, eurRange(r.price, r.price_max)))}">${r.count}</a></td>`;
+        }).join('')}<td class="pc ${deal != null && pMin === deal && pMax === deal ? 'deal' : ''}">${esc(eurRange(pMin, pMax))}</td></tr>`;
+      }).join('')}</tbody></table></div>` : `<p class="muted">${ok ? t.noSlotsWeek : t.unavailable}</p>`;
+
+    const weekNav = hasNext ? `<div class="weeknav">
+      <a class="btn ghost" href="#/halli/${h.id}" ${w === 0 ? 'aria-current="true" style="background:var(--ink);color:#fff"' : ''}>${esc(cap(shortDate(dates[0])))}–${esc(shortDate(dates[Math.min(6, dates.length - 1)]))}</a>
+      <a class="btn ghost" href="#/halli/${h.id}?w=1" ${w === 1 ? 'aria-current="true" style="background:var(--ink);color:#fff"' : ''}>${esc(shortDate(dates[7]))}–${esc(shortDate(dates[dates.length - 1]))}</a>
+    </div>` : '';
+
+    const others = HALLS.filter((x) => x !== h);
+    const maps = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(h.name + ', Helsinki');
+
+    return `<div class="band">${topbar('halli')}</div>
+    ${notices()}
+    <main class="wrap">
+      <nav class="crumbs" aria-label="${t.crumbs}"><a href="#/hallit">${t.crumbHalls}</a> › ${t.crumbSport} › ${esc(h.name)}</nav>
+      <div class="hallhead">
+        <div class="l">
+          ${ok ? `<span class="badge">● ${t.liveSlots}</span>` : `<span class="badge off">${t.noInfo}</span>`}
+          <h1 class="display" tabindex="-1">${esc(h.name)}</h1>
+          <p>${esc(h.area)} · ${esc(t.bcourtsN(h.courts))}${allMin != null ? ` · ${t.fromPerH} <strong class="deal">${esc(eur(allMin))}${t.perH}</strong>` : ''}</p>
+        </div>
+        <div class="r">
+          <a class="btn ghost" href="${maps}" target="_blank" rel="noopener noreferrer">${t.directions}</a>
+          <a class="btn" href="${esc(v.book_url)}" target="_blank" rel="noopener noreferrer" data-book data-venue="${esc(h.venue)}" data-hall="${esc(h.hall)}">${t.bookOnVenue}</a>
+        </div>
+      </div>
+      <section class="section" aria-labelledby="slots-h" style="padding-top:40px">
+        <div class="section-head"><h2 id="slots-h">${t.freeSlots}</h2><span class="muted" style="font-size:13px">${t.gridNote} · ${esc(t.updated(updatedRel()))}</span></div>
+        ${weekNav}
+        ${table}
+      </section>
+      <section class="section">
+        <div class="section-head"><h2>${t.others}</h2><a class="more" href="#/hallit">${t.allHalls}</a></div>
+        <div class="grid-cards">${others.map((x) => hallCard(x)).join('')}</div>
+      </section>
+    </main>`;
+  }
+
+  // ---- Router ----
+  function parseRoute() {
+    let h = location.hash.slice(1);
+    if (/^d=/.test(h)) {            // old links: #d=2026-11-09&h=17,18,19
+      const p = new URLSearchParams(h);
+      const hrs = (p.get('h') || '').split(',').map(Number).filter((n) => n >= 0 && n <= 23);
+      const q = { d: p.get('d') || '' };
+      if (hrs.length) q.t = `${Math.min(...hrs)}-${Math.max(...hrs)}`;
+      h = '/haku?' + new URLSearchParams(q);
+      history.replaceState(null, '', '#' + h);
+    }
+    if (!h.startsWith('/')) h = '/';
+    const [path, qs] = h.split('?');
+    const parts = path.split('/').filter(Boolean);
+    return { path, view: parts[0] || 'home', id: decodeURIComponent(parts[1] || ''), p: new URLSearchParams(qs || '') };
+  }
+
+  const app = document.getElementById('app');
+  let lastPath = null;
+  function render(keepScroll) {
+    const t = T();
+    document.documentElement.lang = lang;
+    document.title = t.docTitle;
+    const route = parseRoute();
+    if (!data) return;
+    nowStr = helsinkiNow();
+    const focusId = document.activeElement && document.activeElement.id;
+    let html;
+    if (route.view === 'haku') html = viewResults(route.p);
+    else if (route.view === 'hallit') html = viewHalls(route.p);
+    else if (route.view === 'halli') html = viewHall(route.id, route.p);
+    else html = viewHome();
+    app.innerHTML = html + footer();
+
+    const h1 = app.querySelector('h1');
+    if (route.view === 'halli' && HALL_BY_ID[route.id]) document.title = `${HALL_BY_ID[route.id].name} – Court Finder`;
+    else if (route.view !== 'home' && h1) document.title = `${h1.textContent} – Court Finder`;
+
+    const samePath = route.path === lastPath;
+    const first = lastPath === null;
+    lastPath = route.path;
+    if (!samePath && !first && !keepScroll) {
+      window.scrollTo(0, 0);
+      if (h1) h1.focus({ preventScroll: true });
+    } else if (focusId) {
+      const el = document.getElementById(focusId);
+      if (el) el.focus({ preventScroll: true });
+    }
+  }
+  function renderError() {
+    const t = T();
+    app.innerHTML = `<div class="band">${topbar('')}</div><main class="wrap"><div class="empty"><strong>${t.loadFail}</strong><p>${t.loadFailBody}</p></div></main>` + footer();
+  }
 
   // ---- Events ----
-  let searchTimer;
-  function changed() {
-    renderAll();
-    clearTimeout(searchTimer);
-    searchTimer = setTimeout(() => track('search', { date: selDate, hours: selHours.size }), 800);
+  function navigate(path, params) {
+    const qs = new URLSearchParams(params).toString();
+    location.hash = '#/' + path + (qs ? '?' + qs : '');
   }
-  $('#days').addEventListener('click', (e) => {
-    const b = e.target.closest('.day'); if (!b) return;
-    selDate = b.dataset.date; changed();
-    const el = document.querySelector(`.day[data-date="${selDate}"]`); if (el) el.focus({ preventScroll: true });
+  function formParams(form) {
+    const q = {};
+    new FormData(form).forEach((val, key) => { if (val && !(key === 'a' && val === 'all')) q[key] = val; });
+    return q;
+  }
+  document.addEventListener('submit', (e) => {
+    const f = e.target;
+    if (f.matches('[data-search]')) {
+      e.preventDefault();
+      const q = formParams(f);
+      const cur = parseRoute().p.get('s');
+      if (cur && f.matches('[data-auto]')) q.s = cur;
+      navigate('haku', q);
+    } else if (f.matches('[data-filters]')) {
+      e.preventDefault();
+    }
   });
-  $('#hours').addEventListener('click', (e) => {
-    const b = e.target.closest('.hour'); if (!b) return;
-    const h = +b.dataset.h; selHours.has(h) ? selHours.delete(h) : selHours.add(h); changed();
-    const el = document.querySelector(`.hour[data-h="${h}"]`); if (el) el.focus({ preventScroll: true });
+  document.addEventListener('change', (e) => {
+    const f = e.target.form;
+    if (!f) return;
+    if (f.matches('[data-search][data-auto]')) f.requestSubmit ? f.requestSubmit() : f.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    else if (f.matches('[data-filters]')) {
+      const q = formParams(f);
+      if (q.s === 'free') delete q.s;
+      navigate('hallit', q);
+    }
   });
-  $('#presets').addEventListener('click', (e) => {
-    const b = e.target.closest('.preset'); if (!b) return;
-    selHours = new Set(range(...PRESETS[b.dataset.p])); changed();
-    const el = document.querySelector(`.preset[data-p="${b.dataset.p}"]`); if (el) el.focus({ preventScroll: true });
+  document.addEventListener('click', (e) => {
+    const langBtn = e.target.closest('[data-lang]');
+    if (langBtn) {
+      lang = lang === 'fi' ? 'en' : 'fi';
+      try { localStorage.setItem('cf-lang', lang); } catch (err) {}
+      track('language', { lang });
+      render(true);
+      return;
+    }
+    const tg = e.target.closest('[data-toggle]');
+    if (tg) {
+      const id = tg.dataset.toggle;
+      expanded.has(id) ? expanded.delete(id) : expanded.add(id);
+      render(true);
+      return;
+    }
+    const book = e.target.closest('[data-book]');
+    if (book) track('book-click', { venue: book.dataset.venue, hall: book.dataset.hall, date: book.dataset.date || '', start: book.dataset.start || '' });
   });
-  $('#results').addEventListener('click', (e) => {
-    const a = e.target.closest('a.book'); if (!a) return;
-    track('book-click', { venue: a.dataset.venue, hall: a.dataset.hall, date: selDate, start: a.dataset.start });
-  });
+  window.addEventListener('hashchange', () => render(false));
 
   // ---- Start ----
   fetch('data.json?t=' + Date.now(), { cache: 'no-store' })
     .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then((json) => {
-      data = json; nowStr = normNow();
-      dates = Object.keys(data.days).filter((d) => d >= nowStr.slice(0, 10)).sort();
-      selDate = dates[0];
-      readHash();
-      renderNotice(); renderAll();
+      data = json;
+      nowStr = helsinkiNow();
+      Object.keys(data.days).forEach((d) => {
+        data.days[d] = data.days[d]
+          .map((r) => Object.assign({}, r, { h: HALL_BY_KEY[r.venue + '|' + r.hall], hour: parseInt(r.start.slice(0, 2), 10) }))
+          .filter((r) => r.h);
+      });
+      dates = Object.keys(data.days).filter((d) => d >= today()).sort();
+      if (!dates.length) dates = [today()];
+      render(false);
     })
-    .catch(() => {
-      $('#results').innerHTML = `<div class="empty"><strong>Court times could not be loaded</strong>Reload the page in a minute. If it keeps failing, check the venues' own sites.</div>`;
-    });
+    .catch((err) => { console.error(err); renderError(); });
 })();
 </script>
 </body>
