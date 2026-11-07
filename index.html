@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free badminton courts in Helsinki</title>
+<meta name="description" content="See free badminton courts at Meilahti, Kallio, Pasila and Mäkelänrinne in one place, then book on the venue's own site.">
+<meta name="theme-color" content="#1E5A8C">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231E5A8C'/%3E%3Cpath d='M6 8h20v16H6zM16 8v16M6 16h20' fill='none' stroke='white' stroke-width='2'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --ink: #13232F;
+    --paper: #EDF2F5;
+    --white: #FFFFFF;
+    --floor: #1E5A8C;      /* sports-hall floor blue */
+    --floor-deep: #143F63;
+    --line: #C3D1DB;
+    --muted: #526775;
+    --t1: #DCE8F1;         /* free-court tints, light to dark */
+    --t2: #B7D0E4;
+    --t3: #8DB6D5;
+    --warn-bg: #FFF1C9;
+    --warn-ink: #5A4300;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: ui-sans-serif, "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+    font-size: 1rem;
+    line-height: 1.45;
+    font-variant-numeric: tabular-nums;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 28px 18px 48px; }
+  h1 {
+    margin: 0 0 8px;
+    font-size: clamp(1.9rem, 6.5vw, 2.9rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    font-weight: 800;
+    max-width: 14em;
+  }
+  .lede { margin: 0 0 24px; color: var(--muted); max-width: 34em; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  button, a.book { font: inherit; cursor: pointer; }
+  button:focus-visible, a:focus-visible { outline: 3px solid var(--floor-deep); outline-offset: 2px; }
+
+  /* day chips */
+  .days {
+    display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 10px;
+    margin: 0 -2px 14px; scroll-snap-type: x proximity;
+  }
+  .day {
+    flex: 0 0 auto; min-width: 62px; padding: 8px 10px; text-align: center;
+    background: var(--white); color: var(--ink);
+    border: 1.5px solid var(--line); border-radius: 10px; scroll-snap-align: start;
+  }
+  .day .w { display: block; font-size: .8rem; color: var(--muted); }
+  .day .d { display: block; font-size: 1.05rem; font-weight: 700; }
+  .day[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--white); }
+  .day[aria-pressed="true"] .w { color: #C9D6DF; }
+
+  /* presets */
+  .presets { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .preset {
+    padding: 6px 14px; border-radius: 999px; background: transparent; color: var(--ink);
+    border: 1.5px solid var(--line); font-weight: 600; font-size: .92rem;
+  }
+  .preset[aria-pressed="true"] { border-color: var(--floor); color: var(--floor-deep); background: var(--white); }
+
+  /* the hour strip */
+  .hours { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; }
+  @media (min-width: 640px) { .hours { grid-template-columns: repeat(16, 1fr); gap: 4px; } }
+  .hour {
+    display: flex; flex-direction: column; align-items: center; gap: 1px;
+    padding: 9px 0 8px; border-radius: 8px; border: 1.5px solid transparent; color: var(--ink);
+    background: var(--t1);
+  }
+  .hour .h { font-weight: 800; font-size: 1rem; line-height: 1.1; }
+  .hour .c { font-size: .8rem; line-height: 1.1; }
+  .hour.l2 { background: var(--t2); }
+  .hour.l3 { background: var(--t3); }
+  .hour.l0 { background: transparent; border: 1.5px dashed var(--line); color: var(--muted); }
+  .hour[aria-pressed="true"] { background: var(--floor); border-color: var(--floor-deep); color: var(--white); }
+  .hint { margin: 10px 0 0; font-size: .86rem; color: var(--muted); max-width: 40em; }
+
+  /* notices */
+  .notice {
+    margin: 18px 0 0; padding: 10px 12px; border-radius: 8px;
+    background: var(--warn-bg); color: var(--warn-ink); font-size: .92rem;
+  }
+  .updated { margin: 22px 0 0; font-size: .85rem; color: var(--muted); }
+
+  /* results */
+  .results { margin-top: 10px; }
+  .results h2 { margin: 18px 0 2px; font-size: 1.05rem; font-weight: 700; color: var(--muted); }
+  .slot { margin-top: 22px; }
+  .slot-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 2px solid var(--ink); padding-bottom: 4px;
+  }
+  .slot-time { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.01em; }
+  .slot-total { font-size: .85rem; color: var(--muted); }
+  .rows { list-style: none; margin: 0; padding: 0; }
+  .row {
+    display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; align-items: center;
+    padding: 12px 0; border-bottom: 1px solid var(--line);
+  }
+  .where .main { display: block; font-weight: 700; }
+  .where .sub { display: block; font-size: .85rem; color: var(--muted); }
+  .courts { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px; font-size: .88rem; }
+  .courts .chip { padding: 1px 7px; background: var(--white); border: 1px solid var(--line); border-radius: 5px; font-weight: 600; }
+  .courts .count { color: var(--muted); }
+  .buy { display: flex; align-items: center; gap: 12px; grid-row: 1; grid-column: 2; }
+  .price { font-weight: 600; color: var(--ink); }
+  a.book {
+    display: inline-block; padding: 9px 18px; border-radius: 8px; text-decoration: none;
+    background: var(--floor); color: var(--white); font-weight: 700;
+  }
+  a.book:hover { background: var(--floor-deep); }
+  @media (min-width: 640px) {
+    .row { grid-template-columns: minmax(150px, 1fr) 2fr auto; }
+    .courts { grid-column: auto; }
+    .buy { grid-row: auto; grid-column: auto; }
+  }
+  .empty { margin: 28px 0 0; padding: 20px 0; border-top: 2px solid var(--ink); }
+  .empty strong { display: block; font-size: 1.1rem; margin-bottom: 4px; }
+
+  footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: .85rem; color: var(--muted); max-width: 44em; }
+  footer p { margin: 0 0 8px; }
+  @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Free badminton courts in Helsinki</h1>
+    <p class="lede">Pick a day and the hours you want to play. When you find a court, you book on the venue's own site.</p>
+  </header>
+
+  <main>
+    <h2 class="sr">Day</h2>
+    <div class="days" id="days" role="group" aria-label="Day"></div>
+
+    <h2 class="sr">Hours</h2>
+    <div class="presets" id="presets" role="group" aria-label="Quick pick">
+      <button type="button" class="preset" data-p="morning" aria-pressed="false">Morning</button>
+      <button type="button" class="preset" data-p="afternoon" aria-pressed="false">Afternoon</button>
+      <button type="button" class="preset" data-p="evening" aria-pressed="false">Evening</button>
+      <button type="button" class="preset" data-p="all" aria-pressed="false">All day</button>
+    </div>
+    <div class="hours" id="hours" role="group" aria-label="Start hour"></div>
+    <p class="hint">Tap hours to add or remove them. The number under each hour is how many courts have a free slot starting then.</p>
+
+    <div id="notice" role="status"></div>
+    <div class="results" id="results" aria-live="polite"></div>
+    <p class="updated" id="updated"></p>
+    <noscript><p class="notice">This page needs JavaScript to show court times.</p></noscript>
+  </main>
+
+  <footer>
+    <p>Times come from Meilahden liikuntakeskus and Urheiluhallit (Kallio, Pasila, Mäkelänrinne) and can be a few minutes behind. Prices shown are a guide. You see the final price when you book.</p>
+    <p>You book and pay on the venue's site. This is an independent project, not run by the venues. Visit statistics are anonymous and cookie-free (Umami).</p>
+  </footer>
+</div>
+
+<script>
+(() => {
+  // ---- Analytics (Umami, cookie-free). Paste your Website ID below. ----
+  const UMAMI_ID = 'REPLACE_WITH_UMAMI_WEBSITE_ID';
+  const UMAMI_SRC = 'https://cloud.umami.is/script.js';
+  if (UMAMI_ID && !UMAMI_ID.startsWith('REPLACE')) {
+    const s = document.createElement('script');
+    s.defer = true; s.src = UMAMI_SRC;
+    s.setAttribute('data-website-id', UMAMI_ID);
+    s.setAttribute('data-do-not-track', 'true');
+    document.head.appendChild(s);
+  }
+  const track = (name, props) => { try { if (window.umami) window.umami.track(name, props); } catch (e) {} };
+
+  // ---- State ----
+  const HOURS = Array.from({ length: 16 }, (_, i) => i + 7);   // start hours 07..22
+  const PRESETS = { morning: [7, 11], afternoon: [12, 16], evening: [17, 22], all: [7, 22] };
+  const $ = (s) => document.querySelector(s);
+  let data = null, dates = [], selDate = null, nowStr = '';
+  let selHours = new Set(range(...PRESETS.evening));
+
+  function range(a, b) { const r = []; for (let i = a; i <= b; i++) r.push(i); return r; }
+  const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const eur = (n) => '€' + (Number.isInteger(n) ? n : n.toFixed(2));
+
+  function helsinkiNow() {
+    return new Intl.DateTimeFormat('sv-SE', {
+      timeZone: 'Europe/Helsinki', year: 'numeric', month: 'numeric', day: 'numeric',
+      hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+    }).format(new Date()).replace(',', '');
+  }
+  const pad = (n) => String(n).padStart(2, '0');
+  function normNow() {            // "2026-11-7 17:04" -> "2026-11-07 17:04"
+    const [d, t] = helsinkiNow().split(' ');
+    const [y, m, dd] = d.split('-');
+    return `${y}-${pad(m)}-${pad(dd)} ${t}`;
+  }
+  const asDate = (iso) => new Date(iso + 'T12:00:00');
+  const weekday = (iso) => asDate(iso).toLocaleDateString('en-GB', { weekday: 'short' });
+  const longDate = (iso) => asDate(iso).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+
+  // ---- Data ----
+  function rowsFor(date) {
+    return (data.days[date] || []).filter((r) => `${date} ${r.start}` >= nowStr);
+  }
+  function hourCounts(rows) {
+    const c = {};
+    rows.forEach((r) => { const h = parseInt(r.start.slice(0, 2), 10); c[h] = (c[h] || 0) + r.count; });
+    return c;
+  }
+
+  // ---- URL state (so a search can be shared) ----
+  function readHash() {
+    const p = new URLSearchParams(location.hash.slice(1));
+    const d = p.get('d'), h = p.get('h');
+    if (d && dates.includes(d)) selDate = d;
+    if (h) {
+      const set = new Set(h.split(',').map(Number).filter((n) => HOURS.includes(n)));
+      if (set.size) selHours = set;
+    }
+  }
+  function writeHash() {
+    const h = [...selHours].sort((a, b) => a - b).join(',');
+    history.replaceState(null, '', `#d=${selDate}&h=${h}`);
+  }
+
+  // ---- Rendering ----
+  function renderDays() {
+    $('#days').innerHTML = dates.map((d, i) => {
+      const today = nowStr.slice(0, 10) === d;
+      const label = today ? 'Today' : weekday(d);
+      const num = `${+d.slice(8)}.${+d.slice(5, 7)}.`;
+      return `<button type="button" class="day" data-date="${d}" aria-pressed="${d === selDate}">` +
+             `<span class="w">${label}</span><span class="d">${num}</span></button>`;
+    }).join('');
+  }
+  function renderHours() {
+    const counts = hourCounts(rowsFor(selDate));
+    $('#hours').innerHTML = HOURS.map((h) => {
+      const n = counts[h] || 0;
+      const lvl = n === 0 ? 'l0' : n <= 2 ? 'l1' : n <= 5 ? 'l2' : 'l3';
+      return `<button type="button" class="hour ${lvl}" data-h="${h}" aria-pressed="${selHours.has(h)}" ` +
+             `aria-label="${pad(h)}:00, ${n} free courts">` +
+             `<span class="h">${pad(h)}</span><span class="c">${n}</span></button>`;
+    }).join('');
+    document.querySelectorAll('.preset').forEach((b) => {
+      const [a, z] = PRESETS[b.dataset.p];
+      const want = range(a, z);
+      const on = want.length === selHours.size && want.every((h) => selHours.has(h));
+      b.setAttribute('aria-pressed', on);
+    });
+  }
+  function renderResults() {
+    const box = $('#results');
+    if (selHours.size === 0) {
+      box.innerHTML = `<div class="empty"><strong>No hours selected</strong>Tap at least one hour above, or pick Morning, Afternoon or Evening.</div>`;
+      return;
+    }
+    const rows = rowsFor(selDate).filter((r) => selHours.has(parseInt(r.start.slice(0, 2), 10)));
+    if (!rows.length) {
+      box.innerHTML = `<div class="empty"><strong>No free courts at those hours</strong>` +
+        `Nothing is free on ${esc(longDate(selDate))} at the hours you picked. Try more hours or another day.</div>`;
+      return;
+    }
+    const groups = {};
+    rows.forEach((r) => { (groups[`${r.start}|${r.end}`] ||= []).push(r); });
+    const keys = Object.keys(groups).sort();
+    box.innerHTML = `<h2>${esc(longDate(selDate))}</h2>` + keys.map((k) => {
+      const [start, end] = k.split('|');
+      const list = groups[k];
+      const total = list.reduce((s, r) => s + r.count, 0);
+      return `<section class="slot"><div class="slot-head"><span class="slot-time">${start}–${end}</span>` +
+        `<span class="slot-total">${total} free ${total === 1 ? 'court' : 'courts'}</span></div><ul class="rows">` +
+        list.map((r) => {
+          const v = data.venues[r.venue];
+          const main = r.venue === 'meilahti' ? 'Meilahti' : r.hall;
+          const sub = r.venue === 'meilahti' ? 'Forza courts' : v.name;
+          const courts = r.courts
+            ? r.courts.map((c) => `<span class="chip">${esc(c)}</span>`).join('')
+            : `<span class="count">${r.count} ${r.count === 1 ? 'court' : 'courts'} free</span>`;
+          let price = '';
+          if (r.price != null) price = r.price_max != null && r.price_max !== r.price ? `${eur(r.price)}–${eur(r.price_max).slice(1)}` : eur(r.price);
+          const aria = `Book ${main} ${sub} at ${start} on ${longDate(selDate)}`;
+          return `<li class="row"><div class="where"><span class="main">${esc(main)}</span><span class="sub">${esc(sub)}</span></div>` +
+            `<div class="courts">${courts}</div>` +
+            `<div class="buy"><span class="price">${price}</span>` +
+            `<a class="book" href="${esc(v.book_url)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(aria)}" ` +
+            `data-venue="${esc(r.venue)}" data-hall="${esc(r.hall)}" data-start="${esc(r.start)}">Book</a></div></li>`;
+        }).join('') + `</ul></section>`;
+    }).join('');
+  }
+  function renderNotice() {
+    const msgs = [];
+    Object.values(data.venues).forEach((v) => { if (!v.ok) msgs.push(`${v.name} could not be loaded just now, so its courts are missing.`); });
+    const ageMin = (Date.now() - Date.parse(data.generated_at)) / 60000;
+    if (ageMin > 60) msgs.push(`These times are ${Math.round(ageMin / 60)} hours old. Check the venue's site before you go.`);
+    $('#notice').innerHTML = msgs.map((m) => `<p class="notice">${esc(m)}</p>`).join('');
+    const t = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Helsinki', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date(data.generated_at));
+    $('#updated').textContent = `Court times updated at ${t} (Helsinki time).`;
+  }
+  function renderAll() { renderDays(); renderHours(); renderResults(); writeHash(); }
+
+  // ---- Events ----
+  let searchTimer;
+  function changed() {
+    renderAll();
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => track('search', { date: selDate, hours: selHours.size }), 800);
+  }
+  $('#days').addEventListener('click', (e) => {
+    const b = e.target.closest('.day'); if (!b) return;
+    selDate = b.dataset.date; changed();
+    const el = document.querySelector(`.day[data-date="${selDate}"]`); if (el) el.focus({ preventScroll: true });
+  });
+  $('#hours').addEventListener('click', (e) => {
+    const b = e.target.closest('.hour'); if (!b) return;
+    const h = +b.dataset.h; selHours.has(h) ? selHours.delete(h) : selHours.add(h); changed();
+    const el = document.querySelector(`.hour[data-h="${h}"]`); if (el) el.focus({ preventScroll: true });
+  });
+  $('#presets').addEventListener('click', (e) => {
+    const b = e.target.closest('.preset'); if (!b) return;
+    selHours = new Set(range(...PRESETS[b.dataset.p])); changed();
+    const el = document.querySelector(`.preset[data-p="${b.dataset.p}"]`); if (el) el.focus({ preventScroll: true });
+  });
+  $('#results').addEventListener('click', (e) => {
+    const a = e.target.closest('a.book'); if (!a) return;
+    track('book-click', { venue: a.dataset.venue, hall: a.dataset.hall, date: selDate, start: a.dataset.start });
+  });
+
+  // ---- Start ----
+  fetch('data.json?t=' + Date.now(), { cache: 'no-store' })
+    .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then((json) => {
+      data = json; nowStr = normNow();
+      dates = Object.keys(data.days).filter((d) => d >= nowStr.slice(0, 10)).sort();
+      selDate = dates[0];
+      readHash();
+      renderNotice(); renderAll();
+    })
+    .catch(() => {
+      $('#results').innerHTML = `<div class="empty"><strong>Court times could not be loaded</strong>Reload the page in a minute. If it keeps failing, check the venues' own sites.</div>`;
+    });
+})();
+</script>
+</body>
+</html>
