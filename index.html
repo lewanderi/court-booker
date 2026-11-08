@@ -161,6 +161,24 @@
 
   /* slot pills */
   .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .sporttag { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; font-size: 12px; font-weight: 600; color: var(--ink); background: #F1F3F6; padding: 4px 10px 4px 6px; border-radius: 999px; }
+  .tchip { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 13px; font-weight: 600; color: var(--ink); background: #F1F3F6; padding: 6px 12px; border-radius: 999px; text-decoration: none; }
+  .tchip:hover { background: var(--line); color: var(--ink); }
+  .slotdlg { border: 0; border-radius: 20px; padding: 24px; width: min(440px, calc(100vw - 32px)); color: var(--ink); }
+  .slotdlg::backdrop { background: rgba(14, 23, 38, .6); }
+  .slotdlg .sd-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .slotdlg .x { width: 40px; height: 40px; border-radius: 999px; border: 1px solid var(--line); background: var(--white); font-size: 18px; line-height: 1; }
+  .slotdlg h2 { margin: 14px 0 2px; font-size: 22px; font-weight: 600; letter-spacing: -.01em; }
+  .slotdlg .sd-area { margin: 0; font-size: 14px; color: var(--muted); }
+  .slotdlg dl { margin: 18px 0 20px; display: grid; grid-template-columns: auto 1fr; gap: 10px 20px; font-size: 15px; }
+  .slotdlg dt { color: var(--muted); }
+  .slotdlg dd { margin: 0; font-weight: 600; }
+  .slotdlg .sd-go { width: 100%; justify-content: center; min-height: 52px; font-size: 15px; }
+  .slotdlg .sd-note { margin: 12px 0 0; font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .slotdlg .sd-hall { display: inline-block; margin-top: 14px; font-size: 14px; font-weight: 600; }
+  @media (max-width: 640px) {
+    .slotdlg { width: 100%; max-width: 100%; margin: auto 0 0; border-radius: 20px 20px 0 0; padding-bottom: 28px; }
+  }
   .pill {
     min-height: 44px; display: inline-flex; align-items: center; gap: 8px; padding: 0 14px;
     border-radius: 999px; border: 1px solid var(--line2); text-decoration: none; color: var(--ink); background: var(--white);
@@ -390,12 +408,12 @@
       navLabel: 'Päävalikko', navSearch: 'Haku', navHalls: 'Hallit',
       langBtn: 'EN', langLabel: 'In English',
       heroTitle: 'Löydä vapaa kenttä',
-      heroLede: 'Helsingin sulkapallohallien vapaat vuorot yhdellä haulla. Varaat suoraan hallilta.',
+      heroLede: 'Pääkaupunkiseudun sulkapallohallien vapaat vuorot yhdellä haulla. Varaat suoraan hallilta.',
       formLabel: 'Hae vapaita vuoroja',
-      sport: 'Laji', badminton: 'Sulkapallo', day: 'Päivä', time: 'Aika', area: 'Alue', allAreas: 'Koko Helsinki', search: 'Hae',
-      today: 'Tänään', tomorrow: 'Huomenna', weekend: 'Viikonloppu',
+      sport: 'Laji', badminton: 'Sulkapallo', day: 'Päivä', time: 'Aika', area: 'Alue', allAreas: 'Kaikki kaupungit', search: 'Hae',
+      today: 'Tänään', tomorrow: 'Huomenna', weekend: 'Viikonloppu', thisWeek: 'Tämä viikko',
       preset: { morning: 'Aamu 7–11', day: 'Päivä 12–16', evening: 'Ilta 17–22', all: 'Koko päivä' },
-      qTonight: 'Tänään illalla', qTomorrowMorning: 'Huomenna aamulla', qWeekend: 'Viikonloppuna',
+      noHallsCity: (c) => `${c}: palvelussa ei ole vielä halleja.`, noHallsCityBody: 'Kokeile toista kaupunkia tai kaikkia kaupunkeja.',
       cheapToday: 'Halvimmat vapaat kentät tänä iltana', cheapTomorrow: 'Halvimmat vapaat kentät huomenna illalla',
       seeAll: 'Näytä kaikki ›',
       hallsHome: 'Sulkapallohallit Helsingissä', allHalls: 'Kaikki hallit ›',
@@ -408,7 +426,13 @@
         ['Vertaa vapaita vuoroja', 'Kaikki hallit, ajat ja hinnat samassa näkymässä.'],
         ['Varaa hallilta', 'Linkki vie suoraan hallin omaan varauspalveluun.'],
       ],
-      resultsTitle: (n, h) => `${n} ${n === 1 ? 'vapaa vuoro' : 'vapaata vuoroa'} ${h} hallissa`,
+      resultsTitle: (n, h) => `${n} ${n === 1 ? 'vapaa sulkapallovuoro' : 'vapaata sulkapallovuoroa'} ${h} hallissa`,
+      timeChip: (a, b) => `Klo ${a}–${b} ✕`, timeChipAria: 'Poista aikarajaus',
+      sdDay: 'Päivä', sdTime: 'Aika', sdFree: 'Vapaana', sdPrice: 'Hinta', perCourt: '/ kenttä',
+      sdGo: 'Jatka varaamaan hallin sivulle ↗',
+      sdNote: (sys) => `Varaus ja maksu tehdään hallin omassa varausjärjestelmässä (${sys}). Vuorot päivittyvät tänne noin 15 minuutin välein, joten vuoro on voinut jo mennä.`,
+      sdWeek: 'Varauskalenteri avautuu valmiiksi oikealle viikolle.', sdHall: 'Näytä hallin kaikki vuorot ›',
+      sdGone: 'Tätä vuoroa ei enää löydy. Se on ehkä jo varattu.',
       priceNote: 'Hinta = kenttä / tunti',
       updated: (rel) => `päivitetty ${rel}`,
       sortLabel: 'Järjestys', sortTime: 'Aika', sortPrice: 'Hinta', sortFree: 'Eniten vapaana',
@@ -459,12 +483,12 @@
       navLabel: 'Main menu', navSearch: 'Search', navHalls: 'Halls',
       langBtn: 'FI', langLabel: 'Suomeksi',
       heroTitle: 'Find a free court',
-      heroLede: 'Free badminton courts across Helsinki in one search. You book directly with the hall.',
+      heroLede: 'Free badminton courts across the Helsinki region in one search. You book directly with the hall.',
       formLabel: 'Search free courts',
-      sport: 'Sport', badminton: 'Badminton', day: 'Day', time: 'Time', area: 'Area', allAreas: 'All of Helsinki', search: 'Search',
-      today: 'Today', tomorrow: 'Tomorrow', weekend: 'Weekend',
+      sport: 'Sport', badminton: 'Badminton', day: 'Day', time: 'Time', area: 'Area', allAreas: 'All cities', search: 'Search',
+      today: 'Today', tomorrow: 'Tomorrow', weekend: 'Weekend', thisWeek: 'This week',
       preset: { morning: 'Morning 7–11', day: 'Daytime 12–16', evening: 'Evening 17–22', all: 'All day' },
-      qTonight: 'Tonight', qTomorrowMorning: 'Tomorrow morning', qWeekend: 'This weekend',
+      noHallsCity: (c) => `No halls in ${c} yet.`, noHallsCityBody: 'Try another city or all cities.',
       cheapToday: 'Cheapest free courts tonight', cheapTomorrow: 'Cheapest free courts tomorrow evening',
       seeAll: 'See all ›',
       hallsHome: 'Badminton halls in Helsinki', allHalls: 'All halls ›',
@@ -477,7 +501,13 @@
         ['Compare free slots', 'Every hall, time and price in one view.'],
         ['Book with the hall', 'The link takes you to the hall’s own booking site.'],
       ],
-      resultsTitle: (n, h) => `${n} free ${n === 1 ? 'slot' : 'slots'} in ${h} ${h === 1 ? 'hall' : 'halls'}`,
+      resultsTitle: (n, h) => `${n} free badminton ${n === 1 ? 'slot' : 'slots'} in ${h} ${h === 1 ? 'hall' : 'halls'}`,
+      timeChip: (a, b) => `${a}:00–${b}:00 ✕`, timeChipAria: 'Remove time filter',
+      sdDay: 'Day', sdTime: 'Time', sdFree: 'Free', sdPrice: 'Price', perCourt: '/ court',
+      sdGo: 'Continue to the hall’s booking site ↗',
+      sdNote: (sys) => `You book and pay in the hall’s own booking system (${sys}). Times here update about every 15 minutes, so the slot may already be taken.`,
+      sdWeek: 'The booking calendar opens on the right week.', sdHall: 'See all times for this hall ›',
+      sdGone: 'This slot is no longer listed. It may have been booked.',
       priceNote: 'Price = one court / hour',
       updated: (rel) => `updated ${rel}`,
       sortLabel: 'Sort', sortTime: 'Time', sortPrice: 'Price', sortFree: 'Most free',
@@ -570,6 +600,21 @@
     if (i < 0) return [];
     return asDate(dates[i]).getDay() === 6 && dates[i + 1] ? [dates[i], dates[i + 1]] : [dates[i]];
   }
+  // "Tämä viikko": today through Sunday. On a Sunday that would equal "today", so run through next Sunday.
+  function weekDays() {
+    const out = [];
+    for (const d of dates) { out.push(d); if (asDate(d).getDay() === 0 && out.length > 1) break; }
+    return out;
+  }
+  const daysFor = (d) => (d === 'we' ? weekendDays() : d === 'wk' ? weekDays() : [d]);
+  // Cities in the Alue dropdown. Halls without a city in halls.json count as Helsinki.
+  const BASE_CITIES = ['Helsinki', 'Espoo', 'Vantaa'];
+  const cityOf = (h) => h.city || 'Helsinki';
+  const slug = (c) => c.toLowerCase();
+  const cities = () => [...new Set([...BASE_CITIES, ...HALLS.map(cityOf)])];
+  const cityBySlug = (a) => cities().find((c) => slug(c) === a);
+  // area is 'all', a city slug ("espoo"), or a hall id (links from a hall page).
+  const inArea = (h, area) => area === 'all' || h.id === area || slug(cityOf(h)) === area;
   // Rows still in the future, with hall info attached.
   function rowsFor(date) {
     return (data.days[date] || []).filter((r) => `${date} ${r.start}` >= nowStr);
@@ -579,18 +624,18 @@
   // ---- Search state (lives in the URL hash) ----
   function readSel(p) {
     const d = p.get('d');
-    const day = d === 'we' || dates.includes(d) ? d : dates[0];
-    let from = 17, to = 22;
+    const day = d === 'we' || d === 'wk' || dates.includes(d) ? d : dates[0];
+    let from = 7, to = 22;   // whole day unless the link narrows it
     const m = /^(\d{1,2})-(\d{1,2})$/.exec(p.get('t') || '');
     if (m && +m[1] >= 0 && +m[2] <= 23 && +m[1] <= +m[2]) { from = +m[1]; to = +m[2]; }
     const a = p.get('a');
     return {
-      d: day, days: day === 'we' ? weekendDays() : [day], from, to,
-      area: HALL_BY_ID[a] ? a : 'all',
+      d: day, days: daysFor(day), from, to,
+      area: HALL_BY_ID[a] || cityBySlug(a) ? a : 'all',
       sort: p.get('s') || '',
     };
   }
-  const matches = (r, sel) => r.hour >= sel.from && r.hour <= sel.to && (sel.area === 'all' || r.h.id === sel.area);
+  const matches = (r, sel) => r.hour >= sel.from && r.hour <= sel.to && inArea(r.h, sel.area);
   const selQuery = (sel, extra) => {
     const q = { d: sel.d, t: `${sel.from}-${sel.to}` };
     if (sel.area !== 'all') q.a = sel.area;
@@ -617,6 +662,7 @@
   function dayOptions(sel, withWeekend) {
     const t = T();
     const opts = dates.map((d) => `<option value="${d}" ${sel.d === d ? 'selected' : ''}>${esc(dayName(d, true))}</option>`);
+    if (withWeekend && weekDays().length > 1) opts.push(`<option value="wk" ${sel.d === 'wk' ? 'selected' : ''}>${t.thisWeek}</option>`);
     if (withWeekend && weekendDays().length) opts.push(`<option value="we" ${sel.d === 'we' ? 'selected' : ''}>${t.weekend}</option>`);
     return opts.join('');
   }
@@ -629,16 +675,17 @@
   }
   function areaOptions(sel) {
     const t = T();
+    const hall = HALL_BY_ID[sel.area];   // came from a hall page link: keep that hall selectable
     return `<option value="all">${t.allAreas}</option>` +
-      [...HALLS].sort((a, b) => a.area.localeCompare(b.area, 'fi'))
-        .map((h) => `<option value="${h.id}" ${sel.area === h.id ? 'selected' : ''}>${esc(h.area)}</option>`).join('');
+      cities().map((c) => `<option value="${esc(slug(c))}" ${sel.area === slug(c) ? 'selected' : ''}>${esc(c)}</option>`).join('') +
+      (hall ? `<option value="${hall.id}" selected>${esc(hall.area)}</option>` : '');
   }
   function searchForm(sel, compact) {
     const t = T();
+    // No time picker: searches cover the whole day.
     return `<form class="search ${compact ? 'compact' : ''}" data-search ${compact ? 'data-auto' : ''} role="search" aria-label="${t.formLabel}">
       <div class="field"><span class="lbl">${t.sport}</span><span class="val">${t.badminton}</span></div>
       <label class="field"><span class="lbl">${t.day}</span><select name="d" id="f-d">${dayOptions(sel, true)}</select></label>
-      <label class="field"><span class="lbl">${t.time}</span><select name="t" id="f-t">${timeOptions(sel)}</select></label>
       <label class="field"><span class="lbl">${t.area}</span><select name="a" id="f-a">${areaOptions(sel)}</select></label>
       <button class="go" type="submit">${SEARCH_ICON}${t.search}</button>
     </form>`;
@@ -650,7 +697,7 @@
     const when = `${longDate(date)} ${t.at(r.start)}`;
     const courts = r.courts ? ' (' + r.courts.join(', ') + ')' : '';
     const isDeal = dealPrice != null && r.price === dealPrice;
-    return `<a class="pill" href="${esc(r.book_url || h.book_url)}" target="_blank" rel="noopener noreferrer" data-book
+    return `<a class="pill" href="${esc(r.book_url || h.book_url)}" target="_blank" rel="noopener noreferrer" data-slot data-book
       data-venue="${esc(h.system)}" data-hall="${esc(h.id)}" data-date="${date}" data-start="${esc(r.start)}"
       title="${esc(t.freeCourts(r.count) + courts)}" aria-label="${esc(t.bookAria(h.name, when, r.count, priceTxt))}">
       ${showDay ? `<span class="wd">${esc(cap(weekdayShort(date)))}</span>` : ''}<span class="t">${esc(r.start)}</span>${priceTxt ? `<span class="p ${isDeal ? 'deal' : ''}">${esc(priceTxt)}</span>` : ''}</a>`;
@@ -687,7 +734,6 @@
     const t = T();
     const sel = readSel(new URLSearchParams());
     const tomorrow = dates[1];
-    const we = weekendDays();
 
     // Cheapest free court per hall this evening (or tomorrow evening if tonight is over).
     const evening = { from: 17, to: 22, area: 'all' };
@@ -703,9 +749,9 @@
     const deals = Object.values(bestByHall).sort((a, b) => ((a.price ?? 1e9) - (b.price ?? 1e9)) || a.start.localeCompare(b.start)).slice(0, 4);
 
     const quick = [
-      [t.qTonight, { d: dates[0], t: '17-22' }],
-      tomorrow ? [t.qTomorrowMorning, { d: tomorrow, t: '7-11' }] : null,
-      we.length ? [t.qWeekend, { d: 'we', t: '7-22' }] : null,
+      [t.today, { d: dates[0], t: '7-22' }],
+      tomorrow ? [t.tomorrow, { d: tomorrow, t: '7-22' }] : null,
+      weekDays().length > 1 ? [t.thisWeek, { d: 'wk', t: '7-22' }] : null,
     ].filter(Boolean);
 
     return `<section class="band">${LINES_HERO}${topbar('home')}
@@ -758,7 +804,7 @@
     const prices = new Set(all.map((r) => r.price).filter((x) => x != null));
     const deal = prices.size > 1 ? Math.min(...prices) : null;
     const hallCount = new Set(all.map((r) => r.h.id)).size;
-    const halls = HALLS.filter((h) => sel.area === 'all' || h.id === sel.area);
+    const halls = HALLS.filter((h) => inArea(h, sel.area));
     const down = halls.filter((h) => !venueOk(h));
 
     clearTimeout(searchTimer);
@@ -777,6 +823,7 @@
           <a class="thumb" href="#/halli/${h.id}" tabindex="-1" aria-hidden="true">${ART}</a>
           <div class="body">
             <div class="title"><a href="#/halli/${h.id}">${esc(h.name)}</a><span class="meta">${esc(h.area)} · ${esc(t.courtsN(h.courts))}</span></div>
+            <span class="sporttag">${sportIcon(SPORT, '#0E1726', 16)}${esc(sportName(SPORT))}</span>
             <div class="pills">${ordered.map((r) => slotPill(r, g.date, false, deal)).join('')}</div>
           </div>
         </article>`;
@@ -792,7 +839,11 @@
       </article>`).join('')}</div>` : '';
 
     let emptyHtml = '';
-    if (!all.length) {
+    const emptyCity = !halls.length && cityBySlug(sel.area);
+    if (emptyCity) {
+      emptyHtml = `<div class="empty"><strong>${esc(t.noHallsCity(emptyCity))}</strong><p>${t.noHallsCityBody}</p>
+        <div class="acts"><a class="btn" href="#/haku?${selQuery(Object.assign({}, sel, { area: 'all' }))}">${t.allAreas}</a></div></div>`;
+    } else if (!all.length) {
       const acts = [];
       if (!(sel.from === 7 && sel.to === 22)) acts.push(`<a class="btn" href="#/haku?${selQuery(sel, { t: '7-22' })}">${t.tryAllDay}</a>`);
       const lastDay = sel.days[sel.days.length - 1];
@@ -801,7 +852,7 @@
       emptyHtml = `<div class="empty"><strong>${t.noneTitle}</strong><p>${t.noneBody}</p><div class="acts">${acts.join('')}</div></div>`;
     }
 
-    const dayTxt = sel.d === 'we' ? t.weekend : dayName(sel.d, true);
+    const dayTxt = sel.d === 'we' ? t.weekend : sel.d === 'wk' ? t.thisWeek : dayName(sel.d, true);
     return `<div class="band">${topbar('haku')}<div class="searchbar wrap">${searchForm(sel, true)}</div></div>
     ${notices()}
     <main class="wrap">
@@ -809,6 +860,7 @@
         <div>
           <h1 tabindex="-1">${all.length ? t.resultsTitle(all.length, hallCount) : esc(dayTxt)}</h1>
           <p>${all.length ? esc(dayTxt) + ' · ' : ''}${t.priceNote} · ${esc(t.updated(updatedRel()))}</p>
+          ${sel.from === 7 && sel.to === 22 ? '' : `<a class="tchip" href="#/haku?${selQuery(sel, { t: '7-22' })}" aria-label="${t.timeChipAria}">${esc(t.timeChip(sel.from, sel.to))}</a>`}
         </div>
         ${all.length ? `<div class="seg"><span class="lbl">${t.sortLabel}</span>${sortLink('time', t.sortTime)}${sortLink('price', t.sortPrice)}</div>` : ''}
       </div>
@@ -880,7 +932,7 @@
   const loc = (v) => (v && typeof v === 'object' && !Array.isArray(v) ? (v[lang] ?? v.fi) : v);
   const sportName = (id) => { const sp = (data.sports || []).find((x) => x.id === id); return sp ? loc(sp.name) : id; };
   const SPORT_ICONS = { badminton: 'M10 6l6 14 6-14M10 6l4 14M22 6l-4 14M16 6v14M12.5 24a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0 -7 0' };
-  const sportIcon = (id, color) => `<svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="${color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${SPORT_ICONS[id] || 'M6 6h20v20H6z'}"/></svg>`;
+  const sportIcon = (id, color, size = 24) => `<svg width="${size}" height="${size}" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="${color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${SPORT_ICONS[id] || 'M6 6h20v20H6z'}"/></svg>`;
   const SHARE_ICON = `<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#0E1726" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7 8l5-5 5 5M5 13v7h14v-7"/></svg>`;
 
   // Weekday daytime / weekday evening / weekend price range from the slots in data.json.
@@ -959,7 +1011,7 @@
         const r = grid[st][d];
         if (!r) return `<td><span class="cell" aria-label="${esc(longDate(d) + ' ' + t.at(st) + ': ' + t.cellFull)}">–</span></td>`;
         const courts = r.courts ? ' (' + r.courts.join(', ') + ')' : '';
-        return `<td><a class="cell" href="${esc(r.book_url || h.book_url)}" target="_blank" rel="noopener noreferrer" data-book
+        return `<td><a class="cell" href="${esc(r.book_url || h.book_url)}" target="_blank" rel="noopener noreferrer" data-slot data-book
           data-venue="${esc(h.system)}" data-hall="${esc(h.id)}" data-date="${d}" data-start="${esc(st)}"
           title="${esc(t.freeCourts(r.count) + courts)}" aria-label="${esc(t.bookAria(h.name, longDate(d) + ' ' + t.at(st), r.count, eurRange(r.price, r.price_max)))}">${r.count}</a></td>`;
       }).join('')}</tr>`).join('')}</tbody></table></div>` : `<p class="muted">${ok ? t.noSlotsWeek : t.unavailable}</p>`;
@@ -1095,6 +1147,7 @@
     if (!data) return;
     nowStr = helsinkiNow();
     const focusId = document.activeElement && document.activeElement.id;
+    const scrollY = window.scrollY;
     let html;
     if (route.view === 'haku') html = viewResults(route.p);
     else if (route.view === 'hallit') html = viewHalls(route.p);
@@ -1112,8 +1165,9 @@
     if (!samePath && !first && !keepScroll) {
       window.scrollTo(0, 0);
       if (h1) h1.focus({ preventScroll: true });
-    } else if (focusId) {
-      const el = document.getElementById(focusId);
+    } else {
+      if (keepScroll) window.scrollTo(0, scrollY);   // rebuilding the page would otherwise jump to the top
+      const el = focusId && document.getElementById(focusId);
       if (el) el.focus({ preventScroll: true });
     }
   }
@@ -1121,6 +1175,41 @@
     const t = T();
     app.innerHTML = `<div class="band">${topbar('')}</div><main class="wrap"><div class="empty"><strong>${t.loadFail}</strong><p>${t.loadFailBody}</p></div></main>` + footer();
   }
+
+  // ---- Slot window: details of one time, with a clear step out to the hall's site ----
+  document.body.insertAdjacentHTML('beforeend', '<dialog class="slotdlg" id="slotdlg" aria-labelledby="sd-h"></dialog>');
+  const slotDlg = document.getElementById('slotdlg');
+  let lastSlot = null;
+  function openSlot(hallId, date, start) {
+    const t = T(), h = HALL_BY_ID[hallId];
+    lastSlot = [hallId, date, start];
+    if (!h || !slotDlg.showModal) return false;
+    const r = (data.days[date] || []).filter((x) => x.h === h && x.start === start).sort((a, b) => b.count - a.count)[0];
+    const sysName = (data.systems && data.systems[h.system] && data.systems[h.system].name) || h.system;
+    const price = r ? eurRange(r.price, r.price_max) : '';
+    slotDlg.innerHTML = `
+      <div class="sd-head"><span class="sporttag">${sportIcon(SPORT, '#0E1726', 16)}${esc(sportName(SPORT))}</span>
+        <button type="button" class="x" data-close-slot aria-label="${t.close}">✕</button></div>
+      <h2 id="sd-h">${esc(h.name)}</h2>
+      <p class="sd-area">${esc(h.area)}, ${esc(cityOf(h))}</p>
+      ${r ? `<dl>
+        <dt>${t.sdDay}</dt><dd>${esc(cap(longDate(date)))}</dd>
+        <dt>${t.sdTime}</dt><dd>${esc(r.start)}–${esc(r.end)}</dd>
+        <dt>${t.sdFree}</dt><dd>${esc(t.freeCourts(r.count).replace(/ vapaana$| free$/, ''))}${r.courts ? ` <span class="muted" style="font-weight:500">(${esc(r.courts.join(', '))})</span>` : ''}</dd>
+        ${price ? `<dt>${t.sdPrice}</dt><dd>${esc(price)} ${t.perCourt}</dd>` : ''}
+      </dl>` : `<p class="sd-note" style="margin:16px 0">${t.sdGone}</p>`}
+      <a class="btn sd-go" href="${esc((r && r.book_url) || h.book_url)}" target="_blank" rel="noopener noreferrer" data-book data-from-dialog
+        data-venue="${esc(h.system)}" data-hall="${esc(h.id)}" data-date="${date}" data-start="${esc(start)}">${t.sdGo}</a>
+      <p class="sd-note">${esc(t.sdNote(sysName))}${r && r.book_url ? ' ' + t.sdWeek : ''}</p>
+      <a class="sd-hall" href="#/halli/${h.id}" data-close-slot>${t.sdHall}</a>`;
+    if (slotDlg.open) return true;   // re-drawn in place, e.g. after a language switch
+    slotDlg.showModal();
+    const go = slotDlg.querySelector('.sd-go');
+    if (go) go.focus();
+    track('slot-open', { hall: h.id, date, start });
+    return true;
+  }
+  slotDlg.addEventListener('click', (e) => { if (e.target === slotDlg) slotDlg.close(); });   // click on the backdrop
 
   // ---- Events ----
   function navigate(path, params) {
@@ -1161,6 +1250,7 @@
       try { localStorage.setItem('cf-lang', lang); } catch (err) {}
       track('language', { lang });
       render(true);
+      if (slotDlg.open && lastSlot) openSlot(...lastSlot);
       return;
     }
     const tg = e.target.closest('[data-toggle]');
@@ -1180,32 +1270,75 @@
     }
     if (e.target.closest('[data-photos]')) { const d = document.getElementById('phdlg'); if (d && d.showModal) d.showModal(); return; }
     if (e.target.closest('[data-close-photos]')) { const d = document.getElementById('phdlg'); if (d) d.close(); return; }
+    if (e.target.closest('[data-close-slot]')) { slotDlg.close(); return; }
+    // A time opens the slot window first; ctrl/cmd/shift-click still opens the hall's site directly.
+    const slot = e.target.closest('[data-slot]');
+    if (slot && !(e.metaKey || e.ctrlKey || e.shiftKey || e.button > 0)) {
+      if (openSlot(slot.dataset.hall, slot.dataset.date, slot.dataset.start)) { e.preventDefault(); return; }
+    }
     const book = e.target.closest('[data-book]');
-    if (book) track('book-click', { venue: book.dataset.venue, hall: book.dataset.hall, date: book.dataset.date || '', start: book.dataset.start || '' });
+    if (book) {
+      track('book-click', { venue: book.dataset.venue, hall: book.dataset.hall, date: book.dataset.date || '', start: book.dataset.start || '' });
+      if (book.hasAttribute('data-from-dialog')) setTimeout(() => slotDlg.close(), 0);
+    }
   });
   window.addEventListener('hashchange', () => render(false));
 
-  // ---- Start ----
-  fetch('data.json?t=' + Date.now(), { cache: 'no-store' })
-    .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
-    .then((json) => {
-      data = json;
-      nowStr = helsinkiNow();
-      HALLS = (data.halls || [])
-        .filter((h) => h.sports && h.sports[SPORT])
-        .map((h) => Object.assign({}, h, { courts: h.sports[SPORT].courts }));
-      HALL_BY_ID = {};
-      HALLS.forEach((h) => { HALL_BY_ID[h.id] = h; });
-      Object.keys(data.days).forEach((d) => {
-        data.days[d] = data.days[d]
-          .filter((r) => (r.sport || SPORT) === SPORT)
-          .map((r) => Object.assign({}, r, { h: HALL_BY_ID[r.hall], hour: parseInt(r.start.slice(0, 2), 10) }))
-          .filter((r) => r.h);
-      });
-      dates = Object.keys(data.days).filter((d) => d >= today()).sort();
-      if (!dates.length) dates = [today()];
-      render(false);
-    })
+  // ---- Start, then keep the data fresh ----
+  const REFRESH_MS = 5 * 60 * 1000;   // re-check data.json this often while the tab is visible
+  let lastFetch = 0, pendingRender = false;
+
+  function fetchData() {
+    lastFetch = Date.now();
+    return fetch('data.json?t=' + Date.now(), { cache: 'no-store' })
+      .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); });
+  }
+  function applyData(json) {
+    data = json;
+    HALLS = (data.halls || [])
+      .filter((h) => h.sports && h.sports[SPORT])
+      .map((h) => Object.assign({}, h, { courts: h.sports[SPORT].courts }));
+    HALL_BY_ID = {};
+    HALLS.forEach((h) => { HALL_BY_ID[h.id] = h; });
+    Object.keys(data.days).forEach((d) => {
+      data.days[d] = data.days[d]
+        .filter((r) => (r.sport || SPORT) === SPORT)
+        .map((r) => Object.assign({}, r, { h: HALL_BY_ID[r.hall], hour: parseInt(r.start.slice(0, 2), 10) }))
+        .filter((r) => r.h);
+    });
+  }
+  function computeDates() {          // also rolls over to the new day after midnight
+    nowStr = helsinkiNow();
+    dates = Object.keys(data.days).filter((d) => d >= today()).sort();
+    if (!dates.length) dates = [today()];
+  }
+  // Re-rendering rebuilds the page, so wait while someone is using a dropdown or the photo viewer.
+  const busy = () => {
+    const a = document.activeElement;
+    return (a && a.tagName === 'SELECT') || !!document.querySelector('dialog[open]');
+  };
+  function refreshView() {
+    if (busy()) { pendingRender = true; return; }
+    pendingRender = false;
+    computeDates();
+    render(true);                    // keeps scroll position and focus
+  }
+  function refresh() {
+    if (document.hidden || !data) return;
+    fetchData()
+      .then((json) => { if (json.generated_at !== data.generated_at) applyData(json); })
+      .catch(() => {})               // offline or a failed fetch: keep showing what we have
+      .then(refreshView);            // even without new data: updates "päivitetty …" and hides past slots
+  }
+  setInterval(refresh, REFRESH_MS);
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && Date.now() - lastFetch > 60 * 1000) refresh();
+  });
+  document.addEventListener('focusout', () => { if (pendingRender) setTimeout(refreshView, 0); });
+  document.addEventListener('close', () => { if (pendingRender) setTimeout(refreshView, 0); }, true);   // dialog closed
+
+  fetchData()
+    .then((json) => { applyData(json); computeDates(); render(false); })
     .catch((err) => { console.error(err); renderError(); });
 })();
 </script>

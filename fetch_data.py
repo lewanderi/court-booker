@@ -41,7 +41,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 # Hall fields that are safe and useful to publish in data.json.
 PUBLIC_HALL_FIELDS = (
-    "id", "name", "area", "address", "lat", "lon", "phone", "photos", "description",
+    "id", "name", "area", "city", "address", "lat", "lon", "phone", "photos", "description",
     "opening_hours", "opening_exceptions", "amenities", "booking_rules",
     "system", "book_url", "benefits",
 )
